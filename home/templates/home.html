@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Home{% endblock head_title %}
+
+
+{% block js %}
+
+{% endblock js %}
+
+{% block content %}
+
+    {% if idEvent is not None %}
+        <h1>{{ titolo_concorso }}- Concorso letterario</h1>
+        <hr>
+        <span>Il regolamento del concorso è online:
+            <a href="https://www.biblio.unimib.it/it/terza-missione/concorso-letterario" target="_blank">
+                https://www.biblio.unimib.it/it/terza-missione/concorso-letterario
+            </a>
+        </span>
+        <br> <br>
+        <span>Per ulteriori informazioni
+            <a href="mailto:concorsoletterario@unimib.it">
+                concorsoletterario@unimib.it
+            </a>
+        </span>
+        <br> <br>
+
+        {% if is_submittable %}
+            <div class="alert alert-info" role="alert">
+                   <span>
+                       <strong>
+                       {{ posti_disponibili }}
+                       posti disponibili su
+                       {{ numero_racconti_inviabili }}
+                       </strong>
+                   </span>
+                <br>
+                <br>
+                {% if delta >= 0 and posti_disponibili > 0 %}
+                    <strong>
+                    <span>Rimangono {{ delta }} giorni per poter partecipare{% if delta == 0 %} (oggi è l'ultimo giorno
+                        utile per l'invio del racconto){% endif %}.</span>
+                    </strong>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                <span>
+                    <strong>
+                        Il periodo utile all'invio del racconto è scaduto
+                    </strong>
+                </span>
+                <br>
+                <br>
+                <span>
+                    <strong>
+                        Sono stati inviati
+                        {{ numero_racconti_inviati }}
+                        racconti su
+                        {{ numero_racconti_inviabili }}
+                        inviabili
+                    </strong>
+                </span>
+            </div>
+        {% endif %}
+
+        {#        {% if not is_submittable %}#}
+        {#            <div class="alert alert-info" role="alert">#}
+        {#                   <span>#}
+        {#                       Il periodo utile all'invio del racconto è scaduto#}
+        {#                   </span>#}
+        {#            </div>#}
+        {#        {% endif %}#}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Nessun concorso attivo</h4>
+            <p>
+                {% lorem %}
+            </p>
+        </div>
+    {% endif %}
+
+
+
+{% endblock content %}

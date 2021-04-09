@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block js %}
+{% endblock js %}
+
+{% block head_title %}{{ block.super }} - Lista segretari{% endblock head_title %}
+
+{% block content %}
+    <br>
+    <div class="alert alert-info" role="alert">
+        <h5>Gestione segreteria</h5>
+        <br>
+        <span>Di seguito la lista dei componenti della segreteria.
+            Tramite le apposite funzionalità è possibile aggiungere o togliere componenti.</span>
+    </div>
+
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">UserEmail</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cognome</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for segretario in segretari %}
+            <tr>
+                <th scope="row"><a aria-labelledby="id del segretario {{ segretario.pk }}" class="btn btn-danger btn-sm" href="{% url 'delete_segretario' segretario.pk %}">Cancella</a>
+                </th>
+                <td>{{ segretario.idUser }} - id[{{ segretario.pk }}]</td>
+                <td>{{ segretario.forename }}</td>
+                <td>{{ segretario.surname }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {#    <a class="btn m-2 btn-secondary" href="{% url 'list_segretario' %}">Indietro</a>#}
+    <a class="btn m-2 btn-primary" href="{% url 'create_segretario' %}">Aggiungi</a>
+
+
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Inserisci valutatore{% endblock head_title %}
+
+{% block content %}
+    <h1>Crea valutatore</h1>
+    <hr>
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div>
+            <a class="btn m-2 btn-secondary" href="{% url 'list_valutatore' pk_event %}">Annulla</a>
+            <input type="submit" class="btn btn-primary" value="Conferma">
+        </div>
+    </form>
+{% endblock content %}

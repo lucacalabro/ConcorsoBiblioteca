@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Invio email{% endblock head_title %}
+
+{% block contentfullwidth %}
+    <style>
+        .btn-space {
+            margin-right: 10px;
+        }
+    </style>
+
+
+    <h5>{{ titolo_concorso }} - Invio email a valutatori</h5>
+    <br>
+
+    <hr>
+    <nav class="navbar navbar-expand-md">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a href="{% url 'list_racconti_segreteria' pk_event %}" class="btn btn-primary btn-sm">CONSEGNE</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_selezioni_segreteria' pk_event %}"
+               class="btn btn-primary btn-sm ">SELEZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.0 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.1 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI TOTALE</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_selezioni' pk_event %}"
+               class="btn btn-primary btn-sm">STATO SELEZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_classificazioni' pk_event %}"
+               class="btn btn-primary btn-sm">STATO CLASSIFICAZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'send_email' pk_event %}"
+               class="btn btn-primary btn-sm disabled">COMUNICAZIONI</a>
+        </div>
+    </nav>
+    <hr>
+
+    {% if id_event == pk_event %}
+        {% if not messaggio_inviato %}
+            <div class="alert alert-info" role="alert">
+        <span>
+            Tramite il form sottostante è possibile inviare comunicazioni ai membri della commissione (valutatori).
+        </span>
+                <br>
+                <br>
+                <span>
+            È possibile scegliere le seguenti liste di destinatari:
+        </span>
+                <br>
+                <ul>
+                    <li>Tutti i membri della commissione</li>
+                    <li>Solo i membri della commissione che non hanno selezionato il numero massimo di racconti.</li>
+                    <li>
+                        Solo i membri della commissione che non hanno effettuato tutte le valutazioni per i racconti
+                        della
+                        categoria {{ categorieeta.0 }} e/o {{ categorieeta.1 }}
+                    </li>
+                </ul>
+                <strong>NOTE:</strong>
+                <br>
+                <span>Se il periodo di selezioni racconti non è ancora attivo la seconda lista di destinatari sarà uguale alla prima</span>
+                <br>
+                <span>Se il periodo di valutazione racconti non è ancora attivo la terza lista di destinatari sarà uguale alla prima</span>
+            </div>
+            <br>
+            <br>
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {{ form | crispy }}
+                <input type="submit" class="btn btn-primary" value="Invio">
+            </form>
+        {% else %}
+            <span><strong>Messaggio inviato con successo</strong></span>
+            <br>
+            <br>
+             <a href="{% url 'send_email' pk_event %}"
+               class="btn btn-primary btn-sm">Ricarica form invio messaggi</a>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <strong>
+                Funzionalità non disponibile: concorso non attivo
+            </strong>
+        </div>
+    {% endif %}
+
+
+
+{% endblock contentfullwidth %}

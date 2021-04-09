@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Crea nuovo racconto{% endblock head_title %}
+
+
+{% block js %}
+
+{% endblock js %}
+
+{% block content %}
+
+
+
+
+    {% if idEvent is not None %}
+        <h1>{{ titolo_concorso }}- Concorso letterario</h1>
+        <hr>
+        {#        {% if not is_submittable and not is_submitted_in_active_event %}#}
+        {#            <div class="alert alert-info" role="alert">#}
+        {#                   <span>#}
+        {#                       Il periodo utile all'invio del racconto è scaduto#}
+        {#                   </span>#}
+        {#            </div>#}
+        {#        {% endif %}#}
+
+        <div class="alert alert-info" role="alert">
+            {% if is_not_valid_user %}
+                <span>
+                       <strong>
+                           L'utente loggato non è abilitato all'invio di racconti.
+                        </strong>
+                       <br><br>
+                       <strong>
+                           Possibile motivazione: si tratta di un utente di struttuta.
+                       </strong>
+                   </span>
+{#            {% endif %}#}
+
+            {% elif is_submitted_in_active_event %}
+                <span>
+                       <strong>
+                           L'utente loggato risulta aver inviato un racconto per questo concorso.
+                        </strong>
+                       <br><br>
+                       <strong>
+                           Di seguito il riepilogo dei dati inviati.
+                       </strong>
+                   </span>
+
+            {% elif not is_submittable %}
+                <span>
+                       <strong>
+                           L'utente loggato non risulta aver inviato nessun racconto nel periodo consentito.
+                        </strong>
+                   </span>
+            {% else %}
+                <span>
+                   <strong>
+                       Inserire i dati nel racconto nel form sottostante ed effettuare l'invio.
+                     </strong>
+                   </span>
+            {% endif %}
+        </div>
+
+        {% if not is_not_valid_user %}
+            <form action="" method="post" novalidate>
+                {% csrf_token %}
+                {{ form.title | as_crispy_field }}
+                {{ form.content | as_crispy_field }}
+
+                {% if is_submittable and not is_submitted_in_active_event %}
+                    <span>Caratteri disponibili: </span><span id="charNum" style="color: #A71E3B">
+                {{ MAX_NUM_CHAR }}</span> <br><br><br>
+                {% endif %}
+
+                {{ form.contacts | as_crispy_field }}
+                {{ form.coAuthors | as_crispy_field }}
+                {{ form.publishingPermission | as_crispy_field }}
+
+
+                {% if is_submittable and not is_submitted_in_active_event %}
+                    {{ form.visioneregolamento | as_crispy_field }}
+                    {{ form.visioneinformativa | as_crispy_field }}
+                    <br>
+                    <div>
+                        <p>
+                            <a class="btn btn-secondary btn-block" href="{% url 'create_racconto' %}">Reset form</a>
+                            {#                        </p>#}
+                            {#                        <p>#}
+                            <input type="submit" class="btn btn-primary btn-block" value="Invia racconto">
+                        </p>
+                    </div>
+
+
+
+                {% endif %}
+            </form>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Nessun concorso attivo</h4>
+            <p>
+                {% lorem %}
+            </p>
+        </div>
+    {% endif %}
+
+
+    {% if is_submittable and not is_submitted_in_active_event %}
+        <script>
+            {#Per contare i caratteri inseriti#}
+
+            function foo() {
+                var max = document.getElementById("content").getAttribute("maxlength")
+                //var max = $('#content').attr("maxlength")
+                max = parseInt(max);
+                var num_char = document.getElementById("content").value.length
+                //var num_char = $('#content').val().length;
+                $('#charNum').text(max - num_char);
+                if (num_char >= max) {
+                    alert("Attenzione, hai raggiunto il massimo numero di caratteri disponibili per il racconto!!!")
+                }
+            }
+
+            {#Per rirpistinare il valore del contatore dei caratteri dopo una validazione#}
+
+            function foo2() {
+                var max = document.getElementById("content").getAttribute("maxlength")
+                var num_char = parseInt(max)
+                var len = document.getElementById("content").value.length
+                document.getElementById("charNum").textContent = num_char - len
+            }
+
+            foo2()
+        </script>
+    {% endif %}
+
+
+{% endblock content %}

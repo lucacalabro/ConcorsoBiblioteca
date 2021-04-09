@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Racconti selezionati{% endblock head_title %}
+
+{% block contentfullwidth %}
+    <style>
+        .btn-space {
+            margin-right: 10px;
+        }
+    </style>
+
+
+    <h5>{{ titolo_concorso }} - Racconti selezionati</h5>
+    <br>
+
+    <hr>
+    <nav class="navbar navbar-expand-md">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a href="{% url 'list_racconti_segreteria' pk_event %}" class="btn btn-primary btn-sm">CONSEGNE</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_selezioni_segreteria' pk_event %}"
+               class="btn btn-primary btn-sm disabled">SELEZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.0 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.1 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI TOTALE</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_selezioni' pk_event %}"
+               class="btn btn-primary btn-sm">STATO SELEZIONI</a>
+             &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_classificazioni' pk_event %}"
+               class="btn btn-primary btn-sm">STATO CLASSIFICAZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'send_email' pk_event %}"
+               class="btn btn-primary btn-sm">COMUNICAZIONI</a>
+        </div>
+    </nav>
+    <hr>
+    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica' 2 pk_event %}" download>
+        Download pdf di tutti i racconti selezionati.
+    </a>
+    <br><br>
+    <a href="{% url 'GenerateXLSX_Con_Anagrafica' 2 pk_event %}">
+        Download XLSX racconti selezionati.
+    </a>
+    <br>
+    <br>
+
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 5%">
+            <col span="1" style="width: 20%;">
+            <col span="1" style="width: 10%">
+            <col span="1" style="width: 10%; background-color: white; text-align: center;">
+            <col span="1" style="width: 5%">
+            <col span="1" style="width: 25%">
+            <col span="1" style="width: 20%">
+            <col span="1" style="width: 5%; background-color: white; text-align: center;">
+        </colgroup>
+        <thead>
+        <tr>
+            <th style="font-size: 14px; vertical-align: middle">
+                Identificativo racconto
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Account
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Cognome
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Nome
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Status età
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Titolo
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Selezioni
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Link al documento
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for racconto in racconti_selezionati %}
+            <tr>
+                <th scope="row" style="font-size: 14px;">
+                    {{ racconto.counter }}
+                </th>
+
+                <td style="font-size: 14px;">
+                    {{ racconto.idUser }}
+                </td>
+                <td style="font-size: 14px;">
+                    {{ racconto.authorForename }}
+                </td>
+                <td style="font-size: 14px;">
+                    {{ racconto.authorSurname }}
+                </td>
+
+                <td style="font-size: 14px;">
+                    {% if racconto.authorBirthDate >= limite_data %}
+                        {{ categorieeta.0 }}
+                    {% else %}
+                        {{ categorieeta.1 }}
+                    {% endif %}
+                </td>
+                <td style="font-size: 14px;">
+                    {{ racconto.title }}
+                </td>
+                <td style="font-size: 14px;">
+                    {% for valutazione in  racconto.raccontovalutazione.all %}
+                        {% if valutazione.selected %}
+                            {{ valutazione.idValutatore.idUser }}
+                            <br>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td style="font-size: 14px;">
+                    <a href="{% url 'GeneraPDF_SINGOLO_Con_Anagrafica' racconto.pk  pk_event %}" target="_blank"
+                       download>LINK</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock contentfullwidth %}

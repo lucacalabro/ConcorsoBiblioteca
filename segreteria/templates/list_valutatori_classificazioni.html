@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Stato classificazioni{% endblock head_title %}
+
+{% block contentfullwidth %}
+    <style>
+        .btn-space {
+            margin-right: 10px;
+        }
+    </style>
+
+
+    <h5>{{ titolo_concorso }} - Stato classificazioni valutatori</h5>
+    <br>
+
+    <hr>
+    <nav class="navbar navbar-expand-md">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a href="{% url 'list_racconti_segreteria' pk_event %}" class="btn btn-primary btn-sm">CONSEGNE</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_selezioni_segreteria' pk_event %}"
+               class="btn btn-primary btn-sm ">SELEZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.0 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.1 | upper }}</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_racconti_junior_senior' pk_event %}"
+               class="btn btn-primary btn-sm">CLASSIFICAZIONI TOTALE</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_selezioni' pk_event %}"
+               class="btn btn-primary btn-sm">STATO SELEZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'list_valutatori_classificazioni' pk_event %}"
+               class="btn btn-primary btn-sm disabled">STATO CLASSIFICAZIONI</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="{% url 'send_email' pk_event %}"
+               class="btn btn-primary btn-sm">COMUNICAZIONI</a>
+        </div>
+    </nav>
+    <hr>
+    {#    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica' 5 pk_event %}" download>#}
+    {#        Download pdf di tutti i racconti classificati.#}
+    {#    </a>#}
+    <span><strong>Periodo classificazioni: dal {{ inizio_periodo_classificazioni | date }}
+        al {{ scadenza_periodo_classificazioni | date }}
+    </strong></span>
+    <br>
+    <br>
+    {#    <a href="{% url 'GenerateXLSX_Con_Anagrafica' 5 pk_event %}">#}
+    {#        Download XLSX di tutti i racconti classificati.#}
+    {#    </a>#}
+    {#    <br>#}
+    {#    <br>#}
+    <table class="table table-hover">
+        <colgroup>
+            <col span="1" style="width: 20%">
+            <col span="1" style="width: 10%;">
+            <col span="1" style="width: 10%">
+            <col span="1" style="width: 30%">
+            <col span="1" style="width: 30%">
+
+        </colgroup>
+        <thead>
+        <tr>
+            <th style="font-size: 14px; vertical-align: middle">
+                Valutatore
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Cognome
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Nome
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Classifiche {{ categorieeta.0 }}
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Classifiche {{ categorieeta.1 }}
+            </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for valutatore in valutatori_concorso %}
+            <tr>
+                <td scope="row" style="font-size: 14px;">
+                    {{ valutatore.idUser }}
+                </td>
+
+                <td style="font-size: 14px;">
+                    {{ valutatore.surname }}
+                </td>
+                <td style="font-size: 14px;">
+                    {{ valutatore.forename }}
+                </td>
+                <td style="font-size: 14px;">
+                    Posizione 1:
+                    {% if valutatore.valutazioni.primo_junior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.primo_junior }}
+                    {% endif %}
+                    <br>
+                    Posizione 2:
+                    {% if valutatore.valutazioni.secondo_junior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.secondo_junior }}
+                    {% endif %}
+                    <br>
+                    Posizione 3:
+                    {% if valutatore.valutazioni.terzo_junior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.terzo_junior }}
+                    {% endif %}
+                </td>
+
+                <td style="font-size: 14px;">
+                    Posizione 1:
+                    {% if valutatore.valutazioni.primo_senior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.primo_senior }}
+                    {% endif %}
+                    <br>
+                    Posizione 2:
+                    {% if valutatore.valutazioni.secondo_senior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.secondo_senior }}
+                    {% endif %}
+                    <br>
+                    Posizione 3:
+                    {% if valutatore.valutazioni.terzo_senior is None %}
+                        <span style="color: red">Nessuna classifica</span>
+                    {% else %}
+                        {{ valutatore.valutazioni.terzo_senior }}
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock contentfullwidth %}

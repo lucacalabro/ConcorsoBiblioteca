@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block js %}
+    {#    <script>#}
+    {#        $(document).ready(function () {#}
+    {#            $('#dtBasicExample').DataTable();#}
+    {#            $('.dataTables_length').addClass('bs-select');#}
+    {#        });#}
+    {#    </script>#}
+{% endblock js %}
+
+{% block head_title %}{{ block.super }} - Lista valutatori{% endblock head_title %}
+
+{% block content %}
+    <br>
+
+    <div class="alert alert-info" role="alert">
+        <h5>Lista commissari</h5>
+        <br>
+        <span>Di seguito la lista dei componenti della commissione del concorso.
+            Tramite le apposite funzionalità è possibile aggiungere o togliere componenti.</span>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+            <span>
+                <strong>Attenzione: </strong>
+                qualora un componente della commissione abbia selezionato dei racconti
+            senza dopo averli deselezionati o abbia fatto delle valutazioni l'operazione di cancellazione verrà ignorata.
+            </span>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">UserEmail</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Cognome</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for valutatore in valutatori %}
+            <tr>
+                <th scope="row"><a class="btn btn-danger btn-sm" href="{% url 'delete_valutatore' valutatore.pk %}">Cancella</a>
+                </th>
+                <td>{{ valutatore.idUser }} - id[{{ valutatore.pk }}]</td>
+                <td>{{ valutatore.forename }}</td>
+                <td>{{ valutatore.surname }}</td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <a class="btn m-2 btn-secondary" href="{% url 'list_event' %}">Indietro</a>
+    <a class="btn m-2 btn-primary" href="{% url 'create_valutatore' pk_event %}">Aggiungi</a>
+
+
+{% endblock content %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Crea evento{% endblock head_title %}
+
+{% block content %}
+    <h1>Dettaglio concorso</h1>
+    <table class="table table-hover ">
+        <thead>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Titolo concorso:</th>
+            <td>{{ object.eventName }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Numero massimo di sottomissioni:</th>
+            <td>{{ object.maxSubmissions }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Numero massimo di selezioni:</th>
+            <td>{{ object.maxSelections }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data inizio sottomissioni evento:</th>
+            <td>{{ object.submissionDateStart | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data fine sottomissioni evento:</th>
+            <td>{{ object.submissionDateEnd | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data inizio selezioni evento:</th>
+            <td>{{ object.selectionDateStart | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data fine selezioni evento:</th>
+            <td>{{ object.selectionDateEnd | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data inizio classificazioni evento:</th>
+            <td>{{ object.classificationDateStart | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Data fine classificazioni evento:</th>
+            <td>{{ object.classificationDateEnd | date }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Limite data di nascita:</th>
+            <td>{{ object.birthDateLimit | date }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+    <a class="btn m-2 btn-secondary" href="{% url 'list_event' %}">Indietro</a>
+    <a class="btn m-2 btn-primary" href="{{ object.get_absolute_url }}" target="_parent">Modifica</a>
+
+
+
+{% endblock content %}

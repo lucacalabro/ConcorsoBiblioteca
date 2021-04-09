@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ racconto.title }}</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <span style='font-style: italic;
+            font-size: 16px;
+            font-family: "Times New Roman";
+            '>Categoria
+                {% if racconto.authorBirthDate >= birthDateLimit %}
+                    {{ categorieeta.0 }}
+                {% else %}
+                    {{ categorieeta.1 }}
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm">
+            <span style='font-style: normal;
+            font-weight: bold;
+            font-size: 16px;
+            color: #9e0000;
+            font-family: "Times New Roman";'>
+                {{ racconto.title }}
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm">
+            <span style='font-style: normal;
+            font-weight: bold;
+            font-size: 12px;
+            font-family: "Times New Roman";'>
+                Codice Id {{ counter }}
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm"
+             style='font-style: normal;
+            font-size: 12px;
+            font-family: "Times New Roman";'>
+            {{ racconto.content|linebreaks }}
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

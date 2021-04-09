@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block js %}
+    {#    <script>#}
+    {#        $(document).ready(function () {#}
+    {#            $('#dtBasicExample').DataTable();#}
+    {#            $('.dataTables_length').addClass('bs-select');#}
+    {#        });#}
+    {#    </script>#}
+{% endblock js %}
+
+{% block head_title %}{{ block.super }} - Lista valutatori{% endblock head_title %}
+
+{% block content %}
+    <br>
+
+    <div class="alert alert-info" role="alert">
+        <h5>Lista concorsi</h5>
+        <br>
+        <span>Di seguito la lista dei concorsi istanziati.
+            Selezionando un concorso si potrà accedere alle viste relative ai racconti consegnati,
+            a quelli selezionati e classificati ed al ranking degli stessi.
+        </span>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+            <span>
+                <strong>Attenzione: </strong>
+                potrà esserci solamente un concorso attivo.
+                 </span>
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+
+            <th scope="col">Titolo concorso</th>
+            <th scope="col">Periodo</th>
+            <th scope="col">Stato</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for concorso in object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'list_racconti_segreteria' concorso.pk %}">
+                         {{ concorso.eventName }} - id[{{ concorso.pk }}]
+                    </a>
+                </td>
+
+                <td>Dal {{ concorso.submissionDateStart | date }}
+                    al {{ concorso.classificationDateEnd  | date }}
+                </td>
+
+                <td>
+                    {% if concorso.pk == id_evento_attivo %}
+                        <span style="color: #00ff00;">ATTIVO</span>
+                    {% else %}
+                        <span style="color: #ff0000;">NON ATTIVO</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {#    <a class="btn m-2 btn-secondary" href="{% url 'list_event' %}">Indietro</a>#}
+    {#    <a class="btn m-2 btn-primary" href="{% url 'create_valutatore' pk_event %}">Aggiungi</a>#}
+
+
+{% endblock content %}

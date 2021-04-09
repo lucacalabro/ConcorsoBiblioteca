@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ racconto.title }}</title>
+     <style>
+        @page {
+            size: a4 portrait;
+            @frame content_frame {
+            left: 25pt;
+            width: 550pt;
+            top: 50pt;
+            height: 850pt;
+        }
+        @frame footer_frame {
+        -pdf-frame-content:footer_content;
+        left: 20pt;
+        width: 512pt;
+        top: 800pt;
+        height: 200pt;
+        }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <span style='font-style: normal;
+            font-weight: bold;
+            font-size: 16px;
+            color: #9e0000;
+            font-family: "Times New Roman";'>
+                {{ racconto.title }}
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm">
+            <span style='font-style: normal;
+            font-weight: bold;
+            font-size: 14px;
+            font-family: "Times New Roman";'>
+                {{ racconto.authorForename }} {{ racconto.authorSurname }}
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm"
+             style='font-style: normal;
+            font-size: 12px;
+            font-family: "Times New Roman";'>
+            {{ racconto.content|linebreaks }}
+        </div>
+    </div>
+</div>
+
+      <div id="footer_content" class="row">
+            <div class="col-sm" align="center"
+                 style='font-style: normal;
+                font-size: 12px;
+                font-family: "Times New Roman";'>
+                Concorso letterario “{{ titolo_concorso }}” - edizione {{ anno }}
+            </div>
+        </div>
+
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+{% load static %}
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EV1Z8X03RL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-EV1Z8X03RL');
+    </script>
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js"
+            integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l"
+            crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js"
+            integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c"
+            crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <title>{% block head_title %}Concorso letterario{% endblock head_title %}</title>
+    <style>
+        .bg-dark {
+            background-color: #a71e3b !important;
+        }
+
+
+        a.btn-primary {
+            color: #fff;
+            background-color: #0071EB;
+            border-color: #0071EB;
+        }
+
+        a.btn-primary:hover {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+
+        a.btn-primary:focus {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem #dc3545;
+        }
+
+        a {
+            color: #0071EB;
+            border-color: #0071EB;
+        }
+
+         a:hover {
+            color: #0071EB;
+            border-color: #0071EB;
+        }
+
+         a:focus {
+            color: #0071EB;
+            border-color: #0071EB;
+        }
+
+         #spanfooter{
+             font-size: 11px;
+             margin: 0px;
+             padding: 10px;
+         }
+
+
+    </style>
+
+    {#Blocco utilizzato per eventuale javascript#}
+    {% block js %}
+    {% endblock js %}
+
+</head>
+<body>
+{% if request.user.is_authenticated %}
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        {#    <a class="navbar-brand" href="#">Concorso letterario</a>#}
+        {#    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"#}
+        {#            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">#}
+        {#        <span class="navbar-toggler-icon"></span>#}
+        {#    </button>#}
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent3">
+            {% if request.user.is_authenticated %}
+                <div class="btn-group bg-dark">
+                    <button type="button" class="btn btn-secondary dropdown-toggle bg-dark" data-toggle="dropdown"
+                            data-display="static"
+                            aria-haspopup="true" aria-expanded="false"> Menu
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
+                        <a class="dropdown-item" href="{% url 'home' %}">Home</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'create_racconto' %}">
+                            {% if is_inviato %}
+                                Visualizza racconto inviato
+                            {% else %}
+                                Invio racconto
+                            {% endif %}
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        {% if is_valutatore %}
+                            <a class="dropdown-item" href="{% url 'selezione_racconti' 1 %}">Selezione racconti</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'votazione_racconti' 'Junior' %}">Classificazione
+                                racconti</a>
+                            <div class="dropdown-divider"></div>
+                        {% endif %}
+                        {% if is_segretario %}
+                            <a class="dropdown-item" href="{% url 'list_event_segreteria' %}">Segreteria concorsi</a>
+                            <div class="dropdown-divider"></div>
+                        {% endif %}
+                        {% if is_gestore %}
+                            <a class="dropdown-item" href="{% url 'list_event' %}">Gestione concorsi</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'list_segretario' %}">Gestione segretaria</a>
+                            <div class="dropdown-divider"></div>
+                        {% endif %}
+                        <a class="dropdown-item" href="{% url 'account_logout' %}">Esci</a>
+                    </div>
+                </div>
+            {% else %}
+                <br><br>
+            {% endif %}
+            <ul class="navbar-nav mr-auto">
+                {#            <li class="nav-item active">#}
+                {#                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>#}
+                {#            </li>#}
+                {#            <li class="nav-item">#}
+                {#                <a class="nav-link" href="#">Link</a>#}
+                {#            </li>#}
+
+                {#            <li class="nav-item dropdown">#}
+                {#                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"#}
+                {#                   aria-haspopup="true" aria-expanded="false">#}
+                {#                    Menu#}
+                {#                </a>#}
+                {#                <div class="dropdown-menu" aria-labelledby="navbarDropdown">#}
+                {#                    <a class="dropdown-item" href="#">Action</a>#}
+                {#                    <a class="dropdown-item" href="#">Another action</a>#}
+                {#                    <div class="dropdown-divider"></div>#}
+                {#                    <a class="dropdown-item" href="{% url 'account_logout' %}">Esci</a>#}
+                {#                </div>#}
+                {#            </li>#}
+
+                {#            <li class="nav-item">#}
+                {#                <a class="nav-link disabled" href="#">Disabled</a>#}
+                {#            </li>#}
+            </ul>
+            {% if request.user.is_authenticated %} <span style="color: white"> Utente: {{ request.user.email }}</span>
+
+            {% endif %}
+        </div>
+    </nav>
+{% endif %}
+<br><br><br>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-1">
+        </div>
+        <div class="col-10">
+            {% block content %}
+
+            {% endblock content %}
+        </div>
+        <div class="col-1">
+        </div>
+
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            {% block contentfullwidth %}
+
+            {% endblock contentfullwidth %}
+        </div>
+
+
+    </div>
+</div>
+
+
+{#<a href="{% url 'singolo' 12 %}" download>Scarica PDF SINGOLO</a>#}
+{#<br>#}
+{#<a href="{% url 'multiplo' %}" download>Scarica PDF MULTIPLO</a>#}
+
+<br><br><br><br>
+<footer class="footer">
+    <div class="container">
+        <div class="row" align="center">
+            <div class="col-12">
+                <span id="spanfooter"><strong>Developed by</strong></span>
+                <a target="_BLANK" style="font-size: 11px; margin: 0px; padding: 3px;"
+                   href="https://www.unimib.it/web-credits">WEB
+                    OFFICE</a>
+                -
+                <a target="_BLANK" style="font-size: 11px; margin: 0px; padding: 3px;"
+                   href="https://www.unimib.it/ugov/organizationunit/112183">INFORMATION AND COMMUNICATION TECNOLOGY
+                    AREA</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+
+</body>
+</html>

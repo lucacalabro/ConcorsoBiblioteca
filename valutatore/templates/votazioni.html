@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Classificazioni racconti{% endblock head_title %}
+
+{% block content %}
+    <style>
+        .btn-space {
+            margin-right: 10px;
+        }
+
+        .spannessunaclassifica {
+            color: #D10000;
+
+        }
+
+    </style>
+    <br>
+    {% if not is_active %}
+        <div class="alert alert-info" role="alert">
+            <span>Non ci sono concorsi in svolgimento
+        </span>
+        </div>
+    {% elif is_classifiable %}
+        {#        <h1>Classificazione racconti</h1>#}
+        {#        <br>#}
+        <div class="alert alert-info" role="alert">
+            {#Classifiche#}
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm">
+                        <h5>Classifica personale racconti</h5>
+                        <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <strong> Categoria Junior</strong>
+                    </div>
+                    <div class="col-sm">
+                        <strong>Categoria Senior</strong>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <span>Posizione 1: </span>
+                        <span>
+                            {% if primo_junior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ primo_junior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="col-sm">
+                        <span>Posizione 1: </span>
+                        <span>
+                            {% if primo_senior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ primo_senior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <span>Posizione 2: </span>
+                        <span>
+                            {% if secondo_junior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ secondo_junior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="col-sm">
+                        <span>Posizione 2:
+                             {% if secondo_senior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ secondo_senior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <span>Posizione 3:
+                            {% if terzo_junior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ terzo_junior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="col-sm">
+                        <span>Posizione 3:
+                            {% if terzo_senior is None %}
+                                <span class="spannessunaclassifica">Nessuna classifica</span>
+                            {% else %}
+                                {{ terzo_senior }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="alert alert-info" role="alert">
+            <span>
+                Usare i pulsanti sottostanti per indicare  la propria
+                classifica personale dei 3 racconti migliori, selezionati da almeno un membro della commissione,
+                per ogni categoria di età.
+            </span>
+            <br>
+            <span>
+                Se rispetto a un racconto viene indicata  una  posizione (da 1 a 3) quella precedente viene sostituita.
+            </span>
+        </div>
+        <hr>
+        <nav class="navbar navbar-expand-md">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent2">
+                <a href="{% url 'votazione_racconti' 'Junior' %}" class="btn btn-primary btn-sm">Racconti categoria
+                    Junior</a>
+                &nbsp;&nbsp;
+                <a href="{% url 'votazione_racconti' 'Senior' %}" class="btn btn-primary btn-sm">Racconti categoria
+                    Senior
+                </a>
+
+
+            </div>
+        </nav>
+        <hr>
+        <a href="{% url 'multiploselezionati' %}" download>
+            Download pdf di tutti i racconti.
+        </a>
+
+
+        <br>
+        <br>
+
+        <table class="table table-hover">
+            <colgroup>
+                <col span="1">
+                <col span="1" style="width: 15%">
+                <col span="1" style="width: 25%">
+                <col span="1" style="width: 60%; background-color: white; text-align: center;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>Ranking</th>
+                <th>Racconto</th>
+                <th>Categoria età</th>
+                <th>Titolo</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in record_set %}
+                <tr>
+                    <th scope="row">
+                        {#                        {{ record.3 }}#}
+                        <div class="btn-group">
+                            <a href="{% url 'votazione_racconto' record.0 record.1 0 %}"
+                               class="btn btn-primary btn-space">1</a>
+                            <a href="{% url 'votazione_racconto' record.0 record.1 1 %}"
+                               class="btn btn-primary btn-space">2</a>
+                            <a href="{% url 'votazione_racconto' record.0 record.1 2 %}"
+                               class="btn btn-primary btn-space">3</a>
+                        </div>
+                    </th>
+                    <td>{{ record.0 }}</td>
+                    <th>{{ record.1 }}</th>
+                    <td>
+                        <a href="{% url 'singolo' record.3 %}" target="_blank">{{ record.2 }}</a>
+                        <br>
+                        <a aria-labelledby="download racconto numero {{ record.0 }}" href="{% url 'singolo' record.3 %}" download>Download pdf racconto</a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <hr>
+
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <span>Il periodo di selezioni racconti per questo concorso non è attivo
+        </span>
+        </div>
+    {% endif %}
+
+{% endblock content %}

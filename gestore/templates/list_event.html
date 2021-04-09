@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Gestione concorsi{% endblock head_title %}
+
+{% block content %}
+
+    <style>
+        a.card-link {
+            color: #006CE0;
+        }
+
+        span.attivo {
+            color: #008500;
+
+        }
+
+        span.nonattivo {
+            color: #E00000;
+        }
+
+    </style>
+    <div class="alert alert-info" role="alert">
+        <h5>Gestione concorsi</h5>
+        <br>
+        <span>Di seguito la lista dei concorsi creati.
+            Tramite le apposite funzionalità è possibile creare e modificare uno o più concorsi.
+        </span>
+    </div>
+
+    <div class="alert alert-warning" role="alert">
+            <span><strong>Attenzione: </strong>non è possibile creare due concorsi i cui periodi si sovrappongono.
+        </span>
+    </div>
+    <br>
+
+
+    <a class="btn m-2 btn-primary" href="{% url 'create_event' %}" target="_parent">Crea nuovo concorso</a>
+    <br>
+    <br>
+
+
+    <div id="accordion">
+        {% for event in object_list %}
+            <div class="card">
+                <div class="card-header">
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-5">
+                                <a class="card-link" data-toggle="collapse" href="#{{ event.eventName }}">
+                                    {{ event.eventName }} - id:{{ event.pk }}
+                                </a>
+                            </div>
+                            <div class="col-5">
+                                Dal {{ event.submissionDateStart | date }}
+                                al {{ event.classificationDateEnd  | date }}
+                            </div>
+                            <div class="col-2">
+                                {% if event.pk == id_evento_attivo %}
+                                    <span class="attivo">ATTIVO</span>
+                                {% else %}
+                                    <span class="nonattivo">NON ATTIVO</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {#<div id="{{ event.eventName }}" class="collapse {% if event.pk == id_evento_attivo %}show{% endif %}" data-parent="#accordion">#}
+                <div id="{{ event.eventName }}" class="collapse" data-parent="#accordion">
+                    <div class="card-body">
+                        <ul id="Evento{{ event.eventName }}">
+                            <li><a href="{% url 'detail_event' event.pk %}" target="_parent">Gestione
+                                concorso: {{ event.eventName }}</a><br>
+
+                            </li>
+                            {#                            <li><a href="{% url 'create_valutatore' event.pk %}" target="_parent">Inserisci#}
+                            {#                                valutatore</a><br>#}
+                            {##}
+                            {#                            </li>#}
+                            <li><a href="{% url 'list_valutatore' event.pk %}" target="_parent">Gestione commissione</a>
+
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        {% endfor %}
+    </div>
+
+
+
+
+{% endblock content %}

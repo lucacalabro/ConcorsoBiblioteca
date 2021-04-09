@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Crea nuovo concorso{% endblock head_title %}
+
+{% block content %}
+    <h1>Crea nuovo concorso</h1>
+    <hr>
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {{ form | crispy }}
+        <div>
+            <a class="btn m-2 btn-secondary" href="{% url 'list_event' %}">Annulla</a>
+            <input type="submit" class="btn btn-primary" value="Conferma">
+        </div>
+    </form>
+{% endblock content %}
+

@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{{ block.super }} - Selezioni racconti{% endblock head_title %}
+
+{% block content %}
+
+
+    <style>
+        a.page-link {
+            color: #0071EB;
+        }
+
+        .page-item.active .page-link {
+            background-color: #0071EB;
+            border-color: #0071EB;
+        }
+    </style>
+
+
+    <br>
+    {% if not is_active %}
+        <div class="alert alert-info" role="alert">
+            <span>Non ci sono concorsi in svolgimento
+        </span>
+        </div>
+    {% elif is_selectable %}
+        {#        <h1>Selezione racconti</h1>#}
+        <div class="alert alert-info" role="alert">
+            <div class="col-sm">
+                <h5>Pagina selezione racconti</h5>
+                <br>
+            </div>
+            <span>
+                Dalla lista sottostante è possibile selezionare
+                {{ numero_racconti_selezionabili }} racconti. In ogni momento sarà possibile
+                deselezionare uno dei racconti scelti.
+            </span>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+            <span>
+                Sono stati selezionati {{ numero_racconti_selezionati }}
+                racconti dei {{ numero_racconti_selezionabili }} selezionabili
+            </span>
+        </div>
+
+        {% if  numero_racconti_selezionati >= numero_racconti_selezionabili %}
+            <div class="alert alert-warning" role="alert">
+            <span>
+                <strong>Attenzione, è stato selezionato il numero massimo di racconti possibile.</strong>
+        </span>
+            </div>
+        {% endif %}
+        <br>
+        <a href="{% url 'multiploselezionabili' %}" download>
+            Download pdf di tutti i racconti.
+        </a>
+        <br>
+        <br>
+        <table class="table table-hover">
+            <colgroup>
+                <col span="1">
+                <col span="1" style="width: 15%">
+                <col span="1" style="width: 25%">
+                <col span="1" style="width: 30%; background-color: white; text-align: center;">
+                <col span="1" style="width: 30%; background-color: white; text-align: center;">
+            </colgroup>
+            <thead>
+            <tr>
+                <th>Selezione</th>
+                <th>Racconto</th>
+                <th>Categoria età</th>
+                <th>Titolo</th>
+                <th>Download documento</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in record_set %}
+                <tr>
+                    {#                Vedo in base alla selezione quale pulsante far comparire#}
+                    <th scope="row">
+                        {% if  record.0 %}
+                            <a aria-labelledby="deseleziona racconto numero {{ record.1 }}"
+                               class="btn btn-danger btn-sm btn-block"
+                               href="{% url 'deseleziona_racconto' record.4 page_number %}">Deseleziona</a>
+                        {% else %}
+                            <a aria-labelledby="seleziona racconto numero {{ record.1 }}"
+                               class="btn btn-primary btn-sm btn-block {% if not is_possible_select %}disabled{% endif %}"
+                               href="{% url 'seleziona_racconto' record.4 page_number %}">Seleziona</a>
+                        {% endif %}
+                    </th>
+                    <td>{{ record.1 }}</td>
+                    <th>{{ record.2 }}</th>
+                    <td>
+                        <a href="{% url 'singolo' record.4 %}" target="_blank">{{ record.3 }}</a>
+
+                    </td>
+                    <td>
+                        <a aria-labelledby="download racconto numero {{ record.1 }}" href="{% url 'singolo' record.4 %}"
+                           download>Download pdf racconto</a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <hr>
+        {% if record_set.paginator.num_pages > 1 %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if record_set.paginator.num_pages != 1 %}
+                        <li class="page-item"><a class="page-link" href="{% url 'selezione_racconti' 1 %}">First</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">First</a></li>
+                    {% endif %}
+                    {% if record_set.has_previous %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="{% url 'selezione_racconti'  record_set.previous_page_number %}">&laquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+                    {% endif %}
+                    {% for i in record_set.paginator.page_range %}
+                        {% if record_set.number == i %}
+                            <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>
+                            </li>
+                        {% elif record_set.number > i|add:"-5" and record_set.number < i|add:"+5" %}
+                            <li class="page-item"><a class="page-link"
+                                                     href="{% url 'selezione_racconti'   i %}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if record_set.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="{% url 'selezione_racconti'   record_set.next_page_number %}">&raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
+                    {% endif %}
+                    {% if record_set.paginator.num_pages != record_set.number %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="{% url 'selezione_racconti'  record_set.paginator.num_pages %}">Last</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+        {#        {% if record_set.paginator.num_pages > 1 %}#}
+        {#            <nav aria-label="Page navigation">#}
+        {#                <ul class="pagination justify-content-center">#}
+        {#                    {% if record_set.paginator.num_pages != 1 %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>#}
+        {#                    {% else %}#}
+        {#                        <li class="page-item disabled"><a class="page-link" href="#">First</a></li>#}
+        {#                    {% endif %}#}
+        {#                    {% if record_set.has_previous %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ record_set.previous_page_number }}">&laquo;</a>#}
+        {#                        </li>#}
+        {#                    {% else %}#}
+        {#                        <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>#}
+        {#                    {% endif %}#}
+        {#                    {% for i in record_set.paginator.page_range %}#}
+        {#                        {% if record_set.number == i %}#}
+        {#                            <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only">(current)</span></a>#}
+        {#                            </li>#}
+        {#                        {% elif record_set.number > i|add:"-5" and record_set.number < i|add:"+5" %}#}
+        {#                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>#}
+        {#                        {% endif %}#}
+        {#                    {% endfor %}#}
+        {#                    {% if record_set.has_next %}#}
+        {#                        <li class="page-item"><a class="page-link"#}
+        {#                                                 href="?page={{ record_set.next_page_number }}">&raquo;</a></li>#}
+        {#                    {% else %}#}
+        {#                        <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>#}
+        {#                    {% endif %}#}
+        {#                    {% if record_set.paginator.num_pages != record_set.number %}#}
+        {#                        <li class="page-item"><a class="page-link"#}
+        {#                                                 href="?page={{ record_set.paginator.num_pages }}">Last</a></li>#}
+        {#                    {% else %}#}
+        {#                        <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>#}
+        {#                    {% endif %}#}
+        {#                </ul>#}
+        {#            </nav>#}
+        {#        {% endif %}#}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <span>Il periodo di selezioni racconti per questo concorso non è attivo
+        </span>
+        </div>
+    {% endif %}
+
+{% endblock content %}

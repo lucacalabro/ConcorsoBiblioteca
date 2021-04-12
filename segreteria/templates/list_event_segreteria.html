@@ -13,6 +13,21 @@
 {% block head_title %}{{ block.super }} - Lista valutatori{% endblock head_title %}
 
 {% block content %}
+     <style>
+        a.card-link {
+            color: #006CE0;
+        }
+
+        span.attivo {
+            color: #008500;
+
+        }
+
+        span.nonattivo {
+            color: #E00000;
+        }
+
+    </style>
     <br>
 
     <div class="alert alert-info" role="alert">
@@ -55,9 +70,9 @@
 
                 <td>
                     {% if concorso.pk == id_evento_attivo %}
-                        <span style="color: #00ff00;">ATTIVO</span>
+                        <span class="attivo">ATTIVO</span>
                     {% else %}
-                        <span style="color: #ff0000;">NON ATTIVO</span>
+                        <span class="nonattivo">NON ATTIVO</span>
                     {% endif %}
                 </td>
             </tr>

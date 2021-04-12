@@ -104,17 +104,16 @@
                 <th scope="row" style="font-size: 14px;">
                     {{ racconto.counter }}
                 </th>
-
                 <td style="font-size: 14px;">
                     {{ racconto.idUser }}
+                </td>
+
+                <td style="font-size: 14px;">
+                    {{ racconto.authorSurname }}
                 </td>
                 <td style="font-size: 14px;">
                     {{ racconto.authorForename }}
                 </td>
-                <td style="font-size: 14px;">
-                    {{ racconto.authorSurname }}
-                </td>
-
                 <td style="font-size: 14px;">
                     {% if racconto.authorBirthDate >= limite_data %}
                         {{ categorieeta.0 }}

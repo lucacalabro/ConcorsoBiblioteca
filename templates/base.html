@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EV1Z8X03RL"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125242624-3"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -18,7 +18,7 @@
 
         gtag('js', new Date());
 
-        gtag('config', 'G-EV1Z8X03RL');
+        gtag('config', 'UA-125242624-3');
     </script>
 
 
@@ -68,23 +68,86 @@
         a {
             color: #0071EB;
             border-color: #0071EB;
+            font-weight: bold;
         }
 
-         a:hover {
+        a:hover {
             color: #0071EB;
             border-color: #0071EB;
         }
 
-         a:focus {
+        a:focus {
             color: #0071EB;
             border-color: #0071EB;
         }
 
-         #spanfooter{
-             font-size: 11px;
-             margin: 0px;
-             padding: 10px;
-         }
+        #spanfooter {
+            font-size: 11px;
+            margin: 0px;
+            padding: 10px;
+        }
+
+
+        .footerstyle {
+            font-size: 11px;
+            margin: 0px;
+            padding: 3px;
+        }
+
+        div.contenutocentrato {
+            text-align: center;
+        }
+
+
+        div.navbar-collapse.collapse:not(.show) {
+            display: inline-grid;
+        }
+
+        @media (max-width: 480px) {
+            #utenteloggato {
+                font-size: 10px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #navbarSupportedContent .navbar-expand-md .navbar-collapse {
+                display: -ms-flexbox !important;
+                display: inline-block !Important;
+
+            }
+        }
+
+
+        @media (max-width: 1300px) {
+            #navbarSupportedContent {
+                display: inline-grid !important;
+            }
+        }
+
+
+        @media (max-width: 1300px) {
+            .badge .badge-warning {
+                display: grid;
+            }
+        }
+
+
+        #navbarSupportedContent3 {
+            display: inherit;
+        }
+
+        .dropdown-item:focus, .dropdown-item:hover {
+
+            background-color: #F0F0F0;
+        }
+
+        #utenteloggato {
+            color: white;
+        }
+
+        body {
+            min-height: 800px;
+        }
 
 
     </style>
@@ -110,7 +173,7 @@
                             data-display="static"
                             aria-haspopup="true" aria-expanded="false"> Menu
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left">
+                    <div class="dropdown-menu dropdown-menu-left dropdown-menu-lg-left">
                         <a class="dropdown-item" href="{% url 'home' %}">Home</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{% url 'create_racconto' %}">
@@ -120,25 +183,28 @@
                                 Invio racconto
                             {% endif %}
                         </a>
-                        <div class="dropdown-divider"></div>
+
                         {% if is_valutatore %}
+
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'selezione_racconti' 1 %}">Selezione racconti</a>
+
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'votazione_racconti' 'Junior' %}">Classificazione
                                 racconti</a>
-                            <div class="dropdown-divider"></div>
                         {% endif %}
                         {% if is_segretario %}
-                            <a class="dropdown-item" href="{% url 'list_event_segreteria' %}">Segreteria concorsi</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'list_event_segreteria' %}">Lista concorsi</a>
                         {% endif %}
                         {% if is_gestore %}
+                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{% url 'list_event' %}">Gestione concorsi</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'list_segretario' %}">Gestione segretaria</a>
-                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'list_segretario' %}">Gestione segreteria</a>
+                            {#                            <div class="dropdown-divider"></div>#}
                         {% endif %}
-                        <a class="dropdown-item" href="{% url 'account_logout' %}">Esci</a>
+                        {#                        <a class="dropdown-item" href="{% url 'account_logout' %}">Esci</a>#}
                     </div>
                 </div>
             {% else %}
@@ -169,7 +235,14 @@
                 {#                <a class="nav-link disabled" href="#">Disabled</a>#}
                 {#            </li>#}
             </ul>
-            {% if request.user.is_authenticated %} <span style="color: white"> Utente: {{ request.user.email }}</span>
+            {% if request.user.is_authenticated %}
+                &nbsp;&nbsp;
+                <span id="utenteloggato"> Utente: {{ request.user.email }}</span>
+                {# <span id="utenteloggato"> Utente: nunziante.scaccabarrozzi@unimib.it</span>#}
+                &nbsp;&nbsp;
+                <a href="{% url 'account_logout' %}" class="btn btn-danger active" role="button" aria-pressed="true">Esci</a>
+
+                {#                <span> <a class="dropdown-item" href="{% url 'account_logout' %}">Esci</a></span>#}
 
             {% endif %}
         </div>
@@ -213,16 +286,25 @@
 <br><br><br><br>
 <footer class="footer">
     <div class="container">
-        <div class="row" align="center">
-            <div class="col-12">
-                <span id="spanfooter"><strong>Developed by</strong></span>
-                <a target="_BLANK" style="font-size: 11px; margin: 0px; padding: 3px;"
-                   href="https://www.unimib.it/web-credits">WEB
-                    OFFICE</a>
-                -
-                <a target="_BLANK" style="font-size: 11px; margin: 0px; padding: 3px;"
-                   href="https://www.unimib.it/ugov/organizationunit/112183">INFORMATION AND COMMUNICATION TECNOLOGY
-                    AREA</a>
+        <div class="row">
+            <div class="col-12 ">
+                <div class="contenutocentrato">
+                    <span id="spanfooter"><strong>Developed by</strong></span>
+                    <a target="_BLANK" class="footerstyle"
+                       href="https://www.unimib.it/web-credits">
+                        Web Office
+                    </a>
+                    -
+                    <a target="_BLANK" class="footerstyle"
+                       href="https://www.unimib.it/ugov/organizationunit/112183">
+                        Information and Communication Tecnology Area
+                    </a>
+                    -
+                    <a target="_BLANK" class="footerstyle"
+                       href="#">
+                        Accessibility statement
+                    </a>
+                </div>
             </div>
         </div>
     </div>

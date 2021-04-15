@@ -8,15 +8,16 @@
 
 {% block content %}
     <br>
+    <h1>Gestione segreteria</h1>
+    <br>
     <div class="alert alert-info" role="alert">
-        <h5>Gestione segreteria</h5>
-        <br>
+
         <span>Di seguito la lista dei componenti della segreteria.
             Tramite le apposite funzionalità è possibile aggiungere o togliere componenti.</span>
     </div>
 
 
-    <table class="table table-hover">
+    <table class="table table-hover" style="overflow-y: hidden;">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -28,11 +29,12 @@
         <tbody>
         {% for segretario in segretari %}
             <tr>
-                <th scope="row"><a aria-labelledby="id del segretario {{ segretario.pk }}" class="btn btn-danger btn-sm" href="{% url 'delete_segretario' segretario.pk %}">Cancella</a>
+                <th scope="row"><a aria-labelledby="id del segretario {{ segretario.pk }}" class="btn btn-danger btn-sm"
+                                   href="{% url 'delete_segretario' segretario.pk %}">Cancella</a>
                 </th>
                 <td>{{ segretario.idUser }} - id[{{ segretario.pk }}]</td>
-                <td>{{ segretario.forename }}</td>
-                <td>{{ segretario.surname }}</td>
+                <td>{{ segretario.forename  | title}}</td>
+                <td>{{ segretario.surname  | title}}</td>
             </tr>
 
         {% endfor %}

@@ -3,10 +3,33 @@
 <head>
     <meta charset="utf-8">
     <title>{{ racconto.title }}</title>
+    <style>
+        @page {
+
+            size: a4 portrait;
+            @frame content_frame {
+            -pdf-word-wrap: CJK;
+            left: 25pt;
+            width: 550pt;
+            top: 50pt;
+            height: 750pt;
+
+        }
+        @frame footer_frame {
+        -pdf-frame-content:footer_content;
+        left: 20pt;
+        width: 512pt;
+        top: 800pt;
+        height: 200pt;
+        }
+        }
+
+
+    </style>
 </head>
 <body>
 
-<div class="container">
+<div id="body_content" class="container-fluid">
     <div class="row">
         <div class="col-sm">
             <span style='font-style: italic;
@@ -46,12 +69,35 @@
     </div>
     <br>
     <div class="row">
+
+
+        {#        <table>#}
+        {#            <tr>#}
+        {#               <td style="font-size: 14px; word-break: break-all;">#}
+        {#                    {{ racconto.content | linebreaks }}#}
+        {#                </td>#}
+        {#            </tr>#}
+        {##}
+        {#        </table>#}
+
         <div class="col-sm"
              style='font-style: normal;
             font-size: 12px;
-            font-family: "Times New Roman";'>
+            font-family: "Times New Roman";  '>
+{#            -pdf-word-wrap: CJK;#}
             {{ racconto.content|linebreaks }}
+
         </div>
+    </div>
+</div>
+
+
+<div id="footer_content" class="row">
+    <div class="col-sm" align="center"
+         style='font-style: normal;
+                font-size: 12px;
+                font-family: "Times New Roman";'>
+        Concorso letterario “{{ titolo_concorso }}” - edizione {{ anno }}
     </div>
 </div>
 

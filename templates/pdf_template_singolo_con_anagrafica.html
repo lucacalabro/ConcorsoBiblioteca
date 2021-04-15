@@ -10,7 +10,7 @@
             left: 25pt;
             width: 550pt;
             top: 50pt;
-            height: 850pt;
+            height: 750pt;
         }
         @frame footer_frame {
         -pdf-frame-content:footer_content;
@@ -52,8 +52,9 @@
         <div class="col-sm"
              style='font-style: normal;
             font-size: 12px;
-            font-family: "Times New Roman";'>
-            {{ racconto.content|linebreaks }}
+            font-family: "Times New Roman"; '>
+            {{ racconto.content | linebreaks }}
+{#            -pdf-word-wrap: CJK;#}
         </div>
     </div>
 </div>

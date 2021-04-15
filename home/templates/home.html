@@ -10,8 +10,15 @@
 
 {% block content %}
 
+<style>
+    #homecontainer{
+        min-height: 700px;
+    }
+</style>
+
+<div id="homecontainer">
     {% if idEvent is not None %}
-        <h1>{{ titolo_concorso }}- Concorso letterario</h1>
+        <h1>{{ titolo_concorso }} - Concorso letterario</h1>
         <hr>
         <span>Il regolamento del concorso è online:
             <a href="https://www.biblio.unimib.it/it/terza-missione/concorso-letterario" target="_blank">
@@ -82,5 +89,5 @@
     {% endif %}
 
 
-
+</div>
 {% endblock content %}

@@ -5,10 +5,25 @@
 
 {% block head_title %}{{ block.super }} - HomePage{% endblock head_title %}
 {% block content %}
+    <style>
+        .btn .badge {
+            position: relative;
+            top: -1px;
+            display: block !important;
+        }
+
+        #infoprivacy {
+            text-align: center;
+        }
+
+        #titoloapp {
+            text-align: center;
+        }
+    </style>
     <div class="row">
-        <div class="col-12" align="center">
+        <div id="titoloapp" class="col-12">
             <div class="card my-1 border border-info card-body py-9">
-                <h2>Piattaforma di gestione Concorso letterario</h2>
+                <h1>Piattaforma di gestione Concorso letterario</h1>
             </div>
         </div>
     </div>
@@ -26,7 +41,7 @@
                     <a class="btn m-2 btn-primary" href="http://dev-app.unimib.it/tesitriennalipsicologia/accounts/login/?next=/tesitriennalipsicologia/utente/">Accedi.</a>
                     <a class="btn m-2 btn-primary" href="{% url 'utente_mostra' %}">Accedi.</a>
                     {% endcomment %}
-                        <a class="btn m-2 btn-primary" href="{% provider_login_url 'google' %}">Accedi.</a>
+                        <a class="btn m-2 btn-primary" href="{% provider_login_url 'google' %}">Accedi</a>
                     </p>
                     <br/>
                     <!-- alert alert-warning rounded  -->
@@ -40,30 +55,45 @@
             {% endif %}
             <div class="card my-1 border border-info card-body py-0">
                 <br>
-                <p class="text-center">I dati raccolti vengono gestiti secondo la vigente normativa.</p>
-                <a class="btn m-2 btn-warning" target="_blank"
-                   href="https://script.google.com/macros/s/AKfycbz0ZdAkQCpYQJpsWWImGJ0Uj4TC-EFtaDekRTaCMaqDXyliZI0/exec?url_site=dev-app.unimib.it/ConcorsoBiblioteca">Visiona
-                    l'informativa aggiornata sul trattamento dei dati personali.
-                </a>
+                <div class="alert alert-primary" role="alert">
+                    <p class="text-center">I dati raccolti vengono gestiti secondo la vigente normativa.</p>
+                </div>
+                <div id="infoprivacy" class="alert alert-warning" role="alert">
+                    <a target="_blank"
+                       href="https://script.google.com/macros/s/AKfycbz0ZdAkQCpYQJpsWWImGJ0Uj4TC-EFtaDekRTaCMaqDXyliZI0/exec?url_site=dev-app.unimib.it/ConcorsoBiblioteca">
+                        Visiona l'informativa aggiornata sul trattamento dei dati personali.
+                    </a>
+                </div>
                 <br>
             </div>
 
             <div class="card my-1 border border-info card-body py-0">
                 <br>
-                <p class="text-center">Per tutte le esigenze fare riferimento alla
-                    casella <a href="mailto:concorsoletterario@unimib.it">
-                        concorsoletterario@unimib.it
-                    </a>
-                    .</p>
+                <div class="alert alert-primary" role="alert">
 
-                <a class="btn m-2 btn-secondary" target="_blank" href="mailto:webapps@unimib.it">
-                    Segnala un problema tecnico o di accesso
-                    <span class="badge badge-warning">
-                        (dettagliando come si sia giunti alla situazione ed allegando screenshots)
-                    </span>
-                </a>
-
-                <br>
+                    <ul id="listasegnalazioni">
+                        <li>
+                            Per tutte le esigenze relative al concorso fare riferimento alla
+                            casella
+                            <a href="mailto:concorsoletterario@unimib.it">
+                                concorsoletterario@unimib.it
+                            </a>
+                        </li>
+                        <li>
+                            Segnala un problema tecnico o di accesso, dettagliando come si sia giunti alla situazione ed
+                            allegando screenshots, inviando una email a
+                            <a href="mailto:webapps@unimib.it">
+                                webapps@unimib.it
+                            </a>
+                        </li>
+                        <li>
+                            Per segnalare un problema di accessibilità del sito invia una email a
+                            <a href="mailto:accessibilita@unimib.it">
+                                accessibilita@unimib.it
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

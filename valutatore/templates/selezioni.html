@@ -26,11 +26,13 @@
         </div>
     {% elif is_selectable %}
         {#        <h1>Selezione racconti</h1>#}
+        <h1>Selezione racconti</h1>
+        <br>
         <div class="alert alert-info" role="alert">
-            <div class="col-sm">
-                <h5>Pagina selezione racconti</h5>
-                <br>
-            </div>
+            {#            <div class="col-sm">#}
+            {##}
+            {##}
+            {#            </div>#}
             <span>
                 Dalla lista sottostante è possibile selezionare
                 {{ numero_racconti_selezionabili }} racconti. In ogni momento sarà possibile
@@ -45,6 +47,14 @@
             </span>
         </div>
 
+        {% if is_only_readable %}
+            <div class="alert alert-warning" role="alert">
+            <span>
+                Il periodo di selezione non è ancora attivo, è possibile visualizzare i racconti.
+            </span>
+        </div>
+        {% endif %}
+
         {% if  numero_racconti_selezionati >= numero_racconti_selezionabili %}
             <div class="alert alert-warning" role="alert">
             <span>
@@ -58,7 +68,7 @@
         </a>
         <br>
         <br>
-        <table class="table table-hover">
+        <table class="table table-hover table-responsive" style="overflow-y: hidden;">
             <colgroup>
                 <col span="1">
                 <col span="1" style="width: 15%">
@@ -79,16 +89,20 @@
             {% for record in record_set %}
                 <tr>
                     {#                Vedo in base alla selezione quale pulsante far comparire#}
+                    {% if not is_only_readable %}
                     <th scope="row">
                         {% if  record.0 %}
-                            <a aria-labelledby="deseleziona racconto numero {{ record.1 }}"
+                            <a aria-label="deseleziona racconto numero {{ record.1 }}"
                                class="btn btn-danger btn-sm btn-block"
                                href="{% url 'deseleziona_racconto' record.4 page_number %}">Deseleziona</a>
                         {% else %}
-                            <a aria-labelledby="seleziona racconto numero {{ record.1 }}"
+                            <a aria-label="seleziona racconto numero {{ record.1 }}"
                                class="btn btn-primary btn-sm btn-block {% if not is_possible_select %}disabled{% endif %}"
                                href="{% url 'seleziona_racconto' record.4 page_number %}">Seleziona</a>
                         {% endif %}
+                    {% else %}
+                        <th scope="row">#</th>
+                    {% endif %}
                     </th>
                     <td>{{ record.1 }}</td>
                     <th>{{ record.2 }}</th>
@@ -97,7 +111,7 @@
 
                     </td>
                     <td>
-                        <a aria-labelledby="download racconto numero {{ record.1 }}" href="{% url 'singolo' record.4 %}"
+                        <a aria-label="download racconto numero {{ record.1 }}" href="{% url 'singolo' record.4 %}"
                            download>Download pdf racconto</a>
                     </td>
                 </tr>
@@ -188,7 +202,8 @@
         {#        {% endif %}#}
     {% else %}
         <div class="alert alert-info" role="alert">
-            <span>Il periodo di selezioni racconti per questo concorso non è attivo
+            <span>
+                Il periodo per la selezione dei racconti per questo concorso è scaduto
         </span>
         </div>
     {% endif %}

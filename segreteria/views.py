@@ -178,7 +178,20 @@ def list_racconti_segreteria(request, pk_event):
 def get_racconti_consegnati_concorso(concorso):
     # Controllo che il pk_event corrisponda all'id di un evento esistente
     racconti_consegnati = racconti.objects.filter(idEvent=concorso).order_by("counter")
+
     return racconti_consegnati
+
+
+
+# Restituisce il Queryset dei racconti consegnati per un dato concorso
+def get_racconti_consegnati_concorso_pubblicabili(concorso):
+    # Controllo che il pk_event corrisponda all'id di un evento esistente
+    racconti_consegnati = racconti.objects.filter(idEvent=concorso, publishingPermission=True).order_by("counter")
+
+    return racconti_consegnati
+
+
+
 
 
 # Lista Racconti selezionati per un dato concorso
@@ -357,7 +370,13 @@ def list_valutatori_selezioni(request, pk_event):
     valutatori_concorso = concorso.valutatoriconcorso.all()
 
     for valutatore in valutatori_concorso:
+        #Numero totale di racconti selezionati
         valutatore.numero_racconti_selezionati = get_numero_racconti_selezionati(valutatore)
+        # Numero totale di racconti selezionati Junior
+        valutatore.numero_racconti_selezionati_junior = get_numero_racconti_selezionati_junior(valutatore)
+        # Numero totale di racconti selezionati Senior
+        valutatore.numero_racconti_selezionati_senior = get_numero_racconti_selezionati_senior(valutatore)
+
 
     valutatori_concorso = sorted(valutatori_concorso, key=operator.attrgetter('idUser'), reverse=False)
 
@@ -379,6 +398,22 @@ def get_numero_racconti_selezionati(valutatore):
     return count
 
 
+# Restituisce il numero di racconti Junior selezionati da un valutatore
+def get_numero_racconti_selezionati_junior(valutatore):
+    count = 0
+    for valutazione in valutatore.valutatorevalutazione.all():
+        if valutazione.selected and valutazione.idRacconto.authorBirthDate >= valutatore.idEvent.birthDateLimit:
+            count += 1
+    return count
+
+# Restituisce il numero di racconti Senior selezionati da un valutatore
+def get_numero_racconti_selezionati_senior(valutatore):
+    count = 0
+    for valutazione in valutatore.valutatorevalutazione.all():
+        if valutazione.selected and valutazione.idRacconto.authorBirthDate < valutatore.idEvent.birthDateLimit:
+            count += 1
+    return count
+
 # Lista dei valutatori di un concorso con relative classificazioni
 # Permesso solo per il ruolo Segretario
 def list_valutatori_classificazioni(request, pk_event):
@@ -398,7 +433,7 @@ def list_valutatori_classificazioni(request, pk_event):
 
     valutatori_concorso = sorted(valutatori_concorso, key=operator.attrgetter('idUser'), reverse=False)
 
-    print(type(valutatori_concorso))
+    #print(type(valutatori_concorso))
 
     # print(valutatori_concorso)
     context = {'valutatori_concorso': valutatori_concorso, 'titolo_concorso': concorso.eventName,
@@ -576,6 +611,12 @@ class GeneratePDFMULTIPLO_Con_Anagrafica(View):
             racconti = get_racconti_junior_senior_classificati_concorso(concorso)
             filename = "Classificati " + concorso.eventName + ".pdf"
             title = "Classificati " + concorso.eventName
+        elif pk_type == 6:  # Queryset solo racconti consegnati per il concorso pubblicabili
+            racconti = get_racconti_consegnati_concorso_pubblicabili(concorso)
+            filename = "Consegne " + concorso.eventName + ".pdf"
+            title = "Consegne " + concorso.eventName
+
+
         else:
             return HttpResponseNotFound()
 

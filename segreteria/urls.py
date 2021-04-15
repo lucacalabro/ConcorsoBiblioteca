@@ -35,9 +35,14 @@ urlpatterns = [
 
     path('GeneraPDF_SINGOLO_Con_Anagrafica/<int:pk>/<int:pk_event>', GeneraPDF_SINGOLO_Con_Anagrafica.as_view(),
          name='GeneraPDF_SINGOLO_Con_Anagrafica'),
+
     path('GeneratePDFMULTIPLO_Con_Anagrafica/<int:pk_type>/<int:pk_event>',
          GeneratePDFMULTIPLO_Con_Anagrafica.as_view(),
          name='GeneratePDFMULTIPLO_Con_Anagrafica'),
+
+    path('GeneratePDFMULTIPLO_Con_Anagrafica_Solo_Pubblicabili/<int:pk_type>/<int:pk_event>',
+         GeneratePDFMULTIPLO_Con_Anagrafica.as_view(),
+         name='GeneratePDFMULTIPLO_Con_Anagrafica_Solo_Pubblicabili'),
 
     path('GenerateXLSX_Con_Anagrafica/<int:pk_type>/<int:pk_event>',
          GenerateXLSX_Con_Anagrafica.as_view(),

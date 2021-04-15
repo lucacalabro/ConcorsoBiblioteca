@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'ConcorsoBiblioteca.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'concorsoletterario',
+        'NAME': 'concorsoletterariotest',
         'USER': 'concorsoletterarioadmin@sidbaplus.mysql.database.azure.com',  # utente amministrativo
         'PASSWORD': 'WE;~(N,9/8&))<wj',  # utente amministrativo
         'HOST': 'sidbaplus.mysql.database.azure.com',

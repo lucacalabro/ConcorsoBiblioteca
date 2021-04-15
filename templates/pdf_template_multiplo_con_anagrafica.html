@@ -13,7 +13,7 @@
             left: 25pt;
             width: 550pt;
             top: 50pt;
-            height: 850pt;
+            height: 750pt;
         }
         @frame footer_frame {
         -pdf-frame-content:footer_content;
@@ -51,11 +51,13 @@
             </div>
         </div>
         <br>
+        {#        style="padding-bottom: 200px; clear: both;"#}
         <div class="row">
             <div class="col-sm"
                  style='font-style: normal;
             font-size: 12px;
-            font-family: "Times New Roman";'>
+            font-family: "Times New Roman";  '>
+{#                -pdf-word-wrap: CJK;#}
                 {{ racconto.content|linebreaks }}
             </div>
         </div>
@@ -65,7 +67,7 @@
         <div class="col-sm" align="center"
              style='font-style: normal;
                 font-size: 12px;
-                font-family: "Times New Roman";'>
+                font-family: "Times New Roman";  -pdf-word-wrap: CJK;'>
             Concorso letterario “{{ titolo_concorso }}” - edizione {{ anno }}
         </div>
     </div>

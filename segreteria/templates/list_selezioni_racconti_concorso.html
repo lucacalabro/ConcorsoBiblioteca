@@ -11,8 +11,8 @@
     </style>
 
 
-    <h5>{{ titolo_concorso }} - Racconti selezionati</h5>
-    <br>
+    <h1>{{ titolo_concorso }} - Racconti selezionati</h1>
+
 
     <hr>
     <nav class="navbar navbar-expand-md">
@@ -52,7 +52,7 @@
     <br>
     <br>
 
-    <table class="table table-hover">
+    <table class="table table-hover table-responsive" style="overflow-y: hidden;">
         <colgroup>
             <col span="1" style="width: 5%">
             <col span="1" style="width: 20%;">
@@ -109,10 +109,10 @@
                 </td>
 
                 <td style="font-size: 14px;">
-                    {{ racconto.authorSurname }}
+                    {{ racconto.authorSurname | title }}
                 </td>
                 <td style="font-size: 14px;">
-                    {{ racconto.authorForename }}
+                    {{ racconto.authorForename | title }}
                 </td>
                 <td style="font-size: 14px;">
                     {% if racconto.authorBirthDate >= limite_data %}
@@ -133,7 +133,7 @@
                     {% endfor %}
                 </td>
                 <td style="font-size: 14px;">
-                    <a href="{% url 'GeneraPDF_SINGOLO_Con_Anagrafica' racconto.pk  pk_event %}" target="_blank"
+                    <a  aria-label="Link al documento {{ racconto.counter }}" href="{% url 'GeneraPDF_SINGOLO_Con_Anagrafica' racconto.pk  pk_event %}" target="_blank"
                        download>LINK</a>
                 </td>
             </tr>

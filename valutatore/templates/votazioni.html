@@ -22,16 +22,15 @@
         </span>
         </div>
     {% elif is_classifiable %}
-        {#        <h1>Classificazione racconti</h1>#}
-        {#        <br>#}
+        <h1>Classifica personale racconti</h1>
+        <br>
         <div class="alert alert-info" role="alert">
             {#Classifiche#}
             <div class="container">
                 <div class="row">
-                    <div class="col-sm">
-                        <h5>Classifica personale racconti</h5>
-                        <br>
-                    </div>
+                    {#                    <div class="col-sm">#}
+                    {#                       #}
+                    {#                    </div>#}
                 </div>
                 <div class="row">
                     <div class="col-sm">
@@ -76,7 +75,7 @@
                     </div>
                     <div class="col-sm">
                         <span>Posizione 2:
-                             {% if secondo_senior is None %}
+                            {% if secondo_senior is None %}
                                 <span class="spannessunaclassifica">Nessuna classifica</span>
                             {% else %}
                                 {{ secondo_senior }}
@@ -161,20 +160,26 @@
                     <th scope="row">
                         {#                        {{ record.3 }}#}
                         <div class="btn-group">
-                            <a href="{% url 'votazione_racconto' record.0 record.1 0 %}"
+                            <a aria-label = "Voto 1 racconto {{ record.0 }}" href="{% url 'votazione_racconto' record.0 record.1 0 %}"
                                class="btn btn-primary btn-space">1</a>
-                            <a href="{% url 'votazione_racconto' record.0 record.1 1 %}"
+                            <a aria-label = "Voto 2 racconto {{ record.0 }}" href="{% url 'votazione_racconto' record.0 record.1 1 %}"
                                class="btn btn-primary btn-space">2</a>
-                            <a href="{% url 'votazione_racconto' record.0 record.1 2 %}"
+                            <a aria-label = "Voto 3 racconto {{ record.0 }}" href="{% url 'votazione_racconto' record.0 record.1 2 %}"
                                class="btn btn-primary btn-space">3</a>
                         </div>
                     </th>
                     <td>{{ record.0 }}</td>
                     <th>{{ record.1 }}</th>
                     <td>
-                        <a href="{% url 'singolo' record.3 %}" target="_blank">{{ record.2 }}</a>
+                        <a id="visualizza{{ record.0 }}" aria-label="visualizza racconto numero {{ record.0 }}" href="{% url 'singolo' record.3 %}" target="_blank">
+                            {{ record.2 }}
+                        </a>
+
                         <br>
-                        <a aria-labelledby="download racconto numero {{ record.0 }}" href="{% url 'singolo' record.3 %}" download>Download pdf racconto</a>
+
+                        <a id="download{{ record.0 }}" aria-label="download racconto numero {{ record.0 }}" href="{% url 'singolo' record.3 %}" download>
+                            Download pdf racconto
+                        </a>
                     </td>
                 </tr>
 
@@ -186,7 +191,8 @@
 
     {% else %}
         <div class="alert alert-info" role="alert">
-            <span>Il periodo di selezioni racconti per questo concorso non è attivo
+            <span>
+                Il periodo di classificazione dei racconti per questo concorso non è ancora attivo
         </span>
         </div>
     {% endif %}

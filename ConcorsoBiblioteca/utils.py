@@ -8,14 +8,14 @@ from django.utils import timezone
 from gestore.models import events
 from ConcorsoBiblioteca.settings import COUNTER
 
-
 # Restituisce l'id dell'evento attivo se esistente
 # None altrimenti
 from segreteria.models import segretario
 from valutatore.models import valutatore
 
-#Restituisce l'id del concorso attivo se c'è
-#altrimenti None
+
+# Restituisce l'id del concorso attivo se c'è
+# altrimenti None
 def id_active_event():
     now = timezone.now()
 
@@ -35,9 +35,33 @@ def is_selectable():
         evento_attivo = events.objects.all().get(pk=idEvent)
         now = timezone.now()
         # Controllo se si è nell'intervallo valido per l'invio dei racocnti
-        if now >= evento_attivo.selectionDateStart and now <= evento_attivo.selectionDateEnd:
+        #if now >= evento_attivo.selectionDateStart and now <= evento_attivo.selectionDateEnd:
+        if now <= evento_attivo.selectionDateEnd:
             return True
         else:
+            return False
+    else:
+        return False
+
+
+
+# Controlla se il perioro di selezione racconti è attivo
+# per il concorso in atto, se non è ancora iniziato
+#i valutatori potranno solamente leggere i racconti inviati
+# restituisce True o False
+def is_only_readable():
+    idEvent = id_active_event()
+
+    if idEvent is not None:
+        evento_attivo = events.objects.all().get(pk=idEvent)
+        now = timezone.now()
+        # Controllo se si è nell'intervallo valido per l'invio dei racocnti
+        #if now >= evento_attivo.selectionDateStart and now <= evento_attivo.selectionDateEnd:
+        if now < evento_attivo.selectionDateStart:
+            #print("w")
+            return True
+        else:
+            #print("q")
             return False
     else:
         return False
@@ -127,7 +151,7 @@ def get_permission(user):
         concorso = events.objects.all().get(pk=id_active_event())
 
     res = {}
-    #print(type(concorso))
+    # print(type(concorso))
 
     # Controllo che l'utente sia un gestore
     is_gestore = False
@@ -157,7 +181,7 @@ def get_permission(user):
     return res
 
 
-#Restituisce la data per cui stabilire se un autore è di categoria Junior o senior
+# Restituisce la data per cui stabilire se un autore è di categoria Junior o senior
 def get_birthDateLimit():
     return events.objects.all().get(pk=id_active_event()).birthDateLimit
 
@@ -167,6 +191,8 @@ from io import BytesIO
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+
+
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
@@ -178,7 +204,9 @@ def render_to_pdf(template_src, context_dict={}):
 
 
 from gestore.models import log
-#Inserisce un entry nella tabella dei log
+
+
+# Inserisce un entry nella tabella dei log
 def insert_log(username, operationDate, roleUser, type, description):
     entry_log = log(
         username=username,
@@ -190,70 +218,57 @@ def insert_log(username, operationDate, roleUser, type, description):
     entry_log.save()
 
 
-
-
-
-
-
-
-
-
-
 # Inserisce racconti di test per il concorso attivo
-def insert_racconti():
-    publishingPermission = True
+# age = 0 Categoria Junior
+# a <> 0 Categoria Senior
+def insert_racconti(age):
+    import random, string
     import datetime
-    for i in range(41, 60):
+    publishingPermission = True
+
+    if age == 0:
+        _authorBirthDate = timezone.now()
+    else:
+        _authorBirthDate = datetime.datetime(1967, 5, 17)
+
+    for i in range(0, 20):
         if i % 2 == 0:
             publishingPermission = True
         else:
             publishingPermission = False
 
+        letters = string.ascii_lowercase
+        nome = ''.join(random.choice(letters) for i in range(10))
+        cognome = ''.join(random.choice(letters) for i in range(10))
+
         racconto = racconti(
             counter=get_counter(),
-            idUser="nome.cognome" + str(i) + "@unimib.it",
+            idUser=nome + "." + cognome + "@unimib.it",
             idEvent=events.objects.all().get(pk=id_active_event()),
             title="Titolo racconto " + str(get_counter()),
-            content="Testo del racconto ...." + str(get_counter()),
+            content=content_test,
             submissionDate=timezone.now(),
             publishingPermission=publishingPermission,
-            contacts="contacts di " + "nome.cognome" + str(i) + "@unimib.it",
-            coAuthors="coAuthors di " + "nome.cognome" + str(i) + "@unimib.it",
-            authorSurname="cognome" + str(i),
-            authorForename="nome" + str(i),
-            authorBirthDate=timezone.now(),#datetime.datetime(1977, 5, 17),
-            authorStatus="authorStatus di " + "nome.cognome" + str(i) + "@unimib.it",
-            authorDetail="authorDetail di " + "nome.cognome" + str(i) + "@unimib.it",
+            contacts="contacts di " + nome + "." + cognome + "@unimib.it",
+            coAuthors="coAuthors di " +nome + "." + cognome + "@unimib.it",
+            authorSurname=cognome,
+            authorForename=nome,
+            authorBirthDate=_authorBirthDate,
+            authorStatus="authorStatus di " + nome + "." + cognome + "@unimib.it",
+            authorDetail="authorDetail di " + nome + "." + cognome + "@unimib.it",
         )
 
         racconto.save()
 
 
-
-
-
-
-
-def test():
-    # importing openpyxl module
-    import openpyxl
-
-    # Give the location of the file
-    path = "C:\\Users\\lucal\\Desktop\\utenti.xlsx"
-
-    # workbook object is created
-    workbook = openpyxl.load_workbook(path)
-
-    # thread_caricamento = threading.Thread(target=test2,args=(workbook))
-    # thread_caricamento.setDaemon(True)
-    # thread_caricamento.start()
-    sheet = workbook.active
-
-
-    for row in sheet.rows:
-        email = row[0].value
-        print(email)
-
-
-
-
+content_test = "At vero eos et accusamus et iusto odio dignissimos ducimus " \
+               "qui blanditiis praesentium voluptatum deleniti atque corrupti " \
+               "quos dolores et quas molestias excepturi sint occaecati cupiditate " \
+               "non provident, similique sunt in culpa qui officia deserunt mollitia animi," \
+               " id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita " \
+               "distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil " \
+               "impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est," \
+               " omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum" \
+               " necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae." \
+               " Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias" \
+               " consequatur aut perferendis doloribus asperiores repellat."

@@ -10,7 +10,7 @@ from django.views import View
 from ConcorsoBiblioteca.restserviceeese3 import dipendente_email, studente_email
 from ConcorsoBiblioteca.settings import NUM_PAGE, CATEGORIE_ETA, RANKING_POINT
 from ConcorsoBiblioteca.utils import render_to_pdf, id_active_event, is_selectable, is_classifiable, get_permission, \
-    get_birthDateLimit, insert_log
+    get_birthDateLimit, insert_log, is_only_readable
 from autore.models import racconti
 from gestore.models import events, gestore
 from .forms import valutatoreModelForm
@@ -234,9 +234,10 @@ def selezione_racconti(request, page_number=1):
         is_possible_select = False
     else:
         is_possible_select = True
+    _is_only_readable = is_only_readable()
 
     context = {'record_set': page_obj, 'numero_racconti_selezionabili': concorso.maxSelections,
-               'numero_racconti_selezionati': numero_racconti_selezionati,
+               'numero_racconti_selezionati': numero_racconti_selezionati, 'is_only_readable' : _is_only_readable,
                'is_possible_select': is_possible_select, 'is_selectable': True, 'is_active': True,
                'page_number': page_number}
     context.update(permissions)
@@ -590,6 +591,8 @@ class GeneraPDF_SINGOLO(View):
             "racconto": racconto,
             "birthDateLimit": birthDateLimit,
             "categorieeta": CATEGORIE_ETA,
+            "titolo_concorso": events.objects.all().get(pk=id_active_event()).eventName,
+            "anno": datetime.now().year,
         }
 
         html = template.render(context)

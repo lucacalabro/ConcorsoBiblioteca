@@ -13,7 +13,7 @@
 {% block head_title %}{{ block.super }} - Lista valutatori{% endblock head_title %}
 
 {% block content %}
-     <style>
+    <style>
         a.card-link {
             color: #006CE0;
         }
@@ -29,10 +29,10 @@
 
     </style>
     <br>
-
+    <h1>Lista concorsi</h1>
+    <br>
     <div class="alert alert-info" role="alert">
-        <h5>Lista concorsi</h5>
-        <br>
+
         <span>Di seguito la lista dei concorsi istanziati.
             Selezionando un concorso si potrà accedere alle viste relative ai racconti consegnati,
             a quelli selezionati e classificati ed al ranking degli stessi.
@@ -60,7 +60,7 @@
             <tr>
                 <td>
                     <a href="{% url 'list_racconti_segreteria' concorso.pk %}">
-                         {{ concorso.eventName }} - id[{{ concorso.pk }}]
+                        {{ concorso.eventName }} - id[{{ concorso.pk }}]
                     </a>
                 </td>
 

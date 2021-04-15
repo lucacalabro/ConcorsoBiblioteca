@@ -16,18 +16,18 @@ class raccontiModelForm(forms.ModelForm):
                                                    label="Coautori in caso di testo collettivo (nome, cognome"
                                                          " e indirizzo email istituzionale)",
                                                    required=False)
-        self.fields['publishingPermission'] = forms.ChoiceField(widget=forms.CheckboxInput(),#.RadioSelect(),
+        self.fields['publishingPermission'] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                                 initial=False, choices=[(True, 'Si'), (False, 'No')],
                                                                 label='Autorizzo la pubblicazione dei racconti '
                                                                       'sul sito della Biblioteca di Ateneo',
                                                                 required=False)
 
         # Campi aggiunti non appartenenti al model
-        self.fields['visioneregolamento'] = forms.ChoiceField(widget=forms.CheckboxInput(),#.RadioSelect(),
+        self.fields['visioneregolamento'] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                               initial=False, choices=[(True, 'Si'), (False, 'No')],
                                                               label="Dichiaro di aver preso visione del regolamento del concorso e di accettare le condizioni <a aria-labelledby='Sito web esterno - informativa regolamento concorso'  href='https://www.biblio.unimib.it/it/terza-missione/concorso-letterario' target='_blank'>LINK</a>",
                                                               required=True)
-        self.fields['visioneinformativa'] = forms.ChoiceField(widget=forms.CheckboxInput(),#.RadioSelect(),
+        self.fields['visioneinformativa'] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                               initial=False, choices=[(True, 'Si'), (False, 'No')],
                                                               label="Dichiaro di aver preso visione dell'informativa privacy all'indirizzo <a aria-labelledby='Sito web esterno - informativa privacy' href = 'https://www.unimib.it/sites/default/files/allegati/informativa_eventi_e_iniziative.pdf' target = '_blank' >LINK</a>",
                                                               required=True)
@@ -54,7 +54,14 @@ class raccontiModelForm(forms.ModelForm):
         _visioneinformativa = eval(cleaned_data.get("visioneinformativa"))
         _numero_caratteri_inserito = cleaned_data.get("content")
 
+        if _numero_caratteri_inserito is not None:
+            _numero_caratteri_inserito = cleaned_data.get("content").replace("\r\n", "").replace("\r", "").replace("\n","")
 
+        # if _numero_caratteri_inserito is not None:
+        #     print("Numero caratteri inserito", len(_numero_caratteri_inserito))
+        #     print(_numero_caratteri_inserito)
+        # else:
+        #     print("None")
 
         # Validazione data inizio selezioni
         if not _visioneregolamento:
@@ -65,8 +72,6 @@ class raccontiModelForm(forms.ModelForm):
 
         if _numero_caratteri_inserito is not None and len(_numero_caratteri_inserito) > MAX_NUM_CHAR:
             self.add_error("content", "Superato il numero di " + str(MAX_NUM_CHAR) + " caratteri.")
-
-
 
     class Meta:
         model = racconti

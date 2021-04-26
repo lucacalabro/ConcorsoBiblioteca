@@ -19,7 +19,7 @@ from django.urls import path
 from .views import list_event_segreteria, list_racconti_segreteria, list_selezioni_segreteria, list_racconti_junior, \
     list_racconti_senior, GeneraPDF_SINGOLO_Con_Anagrafica, GeneratePDFMULTIPLO_Con_Anagrafica, \
     GenerateXLSX_Con_Anagrafica, list_racconti_junior_senior, list_valutatori_selezioni, \
-    list_valutatori_classificazioni, send_email
+    list_valutatori_classificazioni, send_email, delete_racconto
 
 urlpatterns = [
     path('list_event_segreteria/', list_event_segreteria.as_view(), name='list_event_segreteria'),
@@ -47,5 +47,9 @@ urlpatterns = [
     path('GenerateXLSX_Con_Anagrafica/<int:pk_type>/<int:pk_event>',
          GenerateXLSX_Con_Anagrafica.as_view(),
          name='GenerateXLSX_Con_Anagrafica'),
+
+    path('delete_racconto/<int:pk_racconto>', delete_racconto, name="delete_racconto"),
+
+
 
 ]

@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from allauth.account.decorators import login_required
 from django.urls import reverse
+
+from ConcorsoBiblioteca.mailer import emailsender
 from .forms import raccontiModelForm
 from ConcorsoBiblioteca.utils import id_active_event, is_active_event_submittible, get_counter, \
     is_submitted_in_active_event, get_permission
@@ -53,8 +55,7 @@ def create_racconto(request):
             form.fields["publishingPermission"] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                                     initial=racconto_inviato.publishingPermission,
                                                                     choices=[(True, 'Si'), (False, 'No')],
-                                                                    label='Autorizzo la pubblicazione dei racconti '
-                                                                          'sul sito della Biblioteca di Ateneo',
+                                                                    label='Autorizzo la Biblioteca di Ateneo alla pubblicazione del mio racconto',
                                                                     required=False, disabled=True)
             # form.fields["visioneregolamento"] = forms.ChoiceField(widget=forms.RadioSelect(),
             #                                                       initial=True, choices=[(True, 'Si'), (False, 'No')],
@@ -135,6 +136,13 @@ def create_racconto(request):
                                    id=id_active_event(), idRacconto=racconto.pk),
                                )
 
+                    #Invio email di notifica all'utente
+                    subject = "[Notifica invio racconto concorso - {concorso}]".format(concorso=events.objects.all().get(pk=idEvent).eventName)
+                    body = "Il racconto da te inviato &egrave; stato memorizzato.<br><br><br><br>Questo messaggio &egrave; una notifica automatica, qualunque risposta verr&agrave; ignorata."
+                    subject = subject.encode("utf8").decode()
+                    body = body.encode("utf8").decode()
+                    emailsender(subject, body, [request.user.email], [], [])
+
                     return HttpResponseRedirect(reverse('create_racconto'))
             # if a GET (or any other method) we'll create a blank form
             else:
@@ -162,8 +170,7 @@ def create_racconto(request):
                                                       disabled=True)
             form.fields["publishingPermission"] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                                     choices=[(True, 'Si'), (False, 'No')],
-                                                                    label='Autorizzo la pubblicazione dei racconti '
-                                                                          'sul sito della Biblioteca di Ateneo',
+                                                                    label='Autorizzo la Biblioteca di Ateneo alla pubblicazione del mio racconto',
                                                                     required=False, disabled=True)
             # form.fields["visioneregolamento"] = forms.ChoiceField(widget=forms.RadioSelect(),
             #                                                       initial=True, choices=[(True, 'Si'), (False, 'No')],

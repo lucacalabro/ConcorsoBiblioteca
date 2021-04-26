@@ -208,9 +208,12 @@ from gestore.models import log
 
 # Inserisce un entry nella tabella dei log
 def insert_log(username, operationDate, roleUser, type, description):
+    import pytz
+    from datetime import datetime
+    tz = pytz.timezone('Europe/Rome')
     entry_log = log(
         username=username,
-        operationDate=operationDate,
+        operationDate=datetime.utcnow().replace(tzinfo=tz),
         roleUser=roleUser,
         type=type,
         description=description

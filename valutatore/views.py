@@ -14,7 +14,7 @@ from ConcorsoBiblioteca.utils import render_to_pdf, id_active_event, is_selectab
 from autore.models import racconti
 from gestore.models import events, gestore
 from .forms import valutatoreModelForm
-from .models import valutatore, valutazione
+from .models import valutatore, valutazione, letturaracconto
 from django.shortcuts import get_object_or_404
 
 
@@ -153,9 +153,14 @@ def delete_valutatore(request, pk_valutatore):
 # Genera la vista per la selezione dei racconti di un dato concorso
 # Vista accessibile SOLO AD utenti VALUTATORI
 @login_required
-def selezione_racconti(request, page_number=1):
+def selezione_racconti(request, page_number=1, categoriaeta=CATEGORIE_ETA[0]):
     idEvent = id_active_event()
     permissions = get_permission(request.user.email)
+    # Controllo che il parametro categoriaeta sia valido
+
+    if categoriaeta not in CATEGORIE_ETA:
+        return redirect('home')
+
     # Controlla se l'evento è attivo
     if idEvent is None:
         return render(request, "selezioni.html", context={'is_active': False})
@@ -167,15 +172,19 @@ def selezione_racconti(request, page_number=1):
     if valutatore_concorso.count() == 0:  # L'utente non ' un valutatore per questo concorso
         return redirect('home')
 
-    # Se il periodo di selezione non è ancora attivo o non lo è più mostra il messaggio
+    # Se il periodo di selezione non è attivo più mostra il messaggio
     if not is_selectable():
-        context = {'is_selectable': False, 'is_active': True}
+        context = {'is_selectable': False, 'is_active': True, 'categoriaeta': categoriaeta}
         context.update(permissions)
         return render(request, "selezioni.html", context=context)
 
     # Ricavo la lista dei racconti per l'evento con relative selezioni da parte del valutatore.
     # e classificazione in categoria Junior o Senior
-    racconti_evento = racconti.objects.all().filter(idEvent=idEvent)
+
+    if categoriaeta == CATEGORIE_ETA[0]:
+        racconti_evento = racconti.objects.all().filter(idEvent=idEvent, authorBirthDate__gte=concorso.birthDateLimit)
+    else:
+        racconti_evento = racconti.objects.all().filter(idEvent=idEvent, authorBirthDate__lt=concorso.birthDateLimit)
 
     lista_record_racconto = []
     record_racconto = []
@@ -194,6 +203,9 @@ def selezione_racconti(request, page_number=1):
 
         record_racconto.append(racconto.counter)  # Counter racconto
 
+
+
+
         # Calcolo categoria età
         if racconto.authorBirthDate < concorso.birthDateLimit:
             record_racconto.append(CATEGORIE_ETA[1])  # Status età
@@ -203,6 +215,23 @@ def selezione_racconti(request, page_number=1):
         record_racconto.append(racconto.title)  # Titolo racconto
 
         record_racconto.append(racconto.pk)  # Id racconto
+
+
+
+        # Vedo se il racconto è stato marcato come letto dal valutatore loggato
+        raccontoletto = letturaracconto.objects.all().filter(idRacconto=racconto, idValutatore=valutatore_concorso[0])[:1]
+
+        # Il racconto non è stato letto da questo valutatore
+        if raccontoletto.count() == 0:
+            record_racconto.append(False)
+        else:
+            record_racconto.append(True)
+        # print(raccontoletto)
+        # print("racconto",racconto)
+        # print("valutatore", valutatore_concorso)
+
+
+
 
         lista_record_racconto.append(record_racconto)
         record_racconto = []
@@ -237,9 +266,9 @@ def selezione_racconti(request, page_number=1):
     _is_only_readable = is_only_readable()
 
     context = {'record_set': page_obj, 'numero_racconti_selezionabili': concorso.maxSelections,
-               'numero_racconti_selezionati': numero_racconti_selezionati, 'is_only_readable' : _is_only_readable,
+               'numero_racconti_selezionati': numero_racconti_selezionati, 'is_only_readable': _is_only_readable,
                'is_possible_select': is_possible_select, 'is_selectable': True, 'is_active': True,
-               'page_number': page_number}
+               'page_number': page_number, 'categoriaeta': categoriaeta, }
     context.update(permissions)
 
     # return render(request, "selezioni.html", context={'record_set': lista_record_racconto})
@@ -249,7 +278,7 @@ def selezione_racconti(request, page_number=1):
 # Vista per la SELEZIONE di un racconto
 # Vista accessibile SOLO AD utenti VALUTATORI
 @login_required
-def seleziona_racconto(request, pk_racconto, page_number):
+def seleziona_racconto(request, pk_racconto, page_number, categoriaeta):
     idEvent = id_active_event()
 
     # Controlla se l'evento è attivo
@@ -306,13 +335,13 @@ def seleziona_racconto(request, pk_racconto, page_number):
                    id=id_active_event(), idRacconto=pk_racconto),
                )
 
-    return redirect('selezione_racconti', page_number=page_number)
+    return redirect('selezione_racconti', page_number=page_number, categoriaeta=categoriaeta)
 
 
 # Vista per la DESELEZIONE di un racconto
 # Vista accessibile SOLO AD utenti VALUTATORI
 @login_required
-def deseleziona_racconto(request, pk_racconto, page_number):
+def deseleziona_racconto(request, pk_racconto, page_number, categoriaeta):
     idEvent = id_active_event()
 
     # Controlla se l'evento è attivo
@@ -361,7 +390,54 @@ def deseleziona_racconto(request, pk_racconto, page_number):
                    id=id_active_event(), idRacconto=pk_racconto),
                )
 
-    return redirect('selezione_racconti', page_number=page_number)
+    return redirect('selezione_racconti', page_number=page_number, categoriaeta=categoriaeta)
+
+
+# Vista per marcare un racconto come letto
+@login_required
+def lettura_racconto(request, pk_racconto, page_number, categoriaeta):
+    # Vedo se il racconto è stato marcato come letto dal valutatore loggato
+    idEvent = id_active_event()
+    concorso = events.objects.all().get(pk=idEvent)
+    racconto = racconti.objects.all().get(pk=pk_racconto)
+
+    valutatore_concorso = valutatore.objects.all().filter(idEvent=concorso, idUser=request.user.email)[:1]
+
+    #Creo un record di lettura
+    raccontoletto = letturaracconto.objects.all().filter(idRacconto=racconto, idValutatore=valutatore_concorso[0])[:1]
+
+    # Il racconto non è stato letto da questo valutatore
+    # Controllo di sicurezza per stabilire
+    # che il valutatore non abbia effettivamente letto il racconto
+    if raccontoletto.count() == 0:
+        letturaracconto.objects.all().create(idRacconto=racconto, idValutatore=valutatore_concorso[0])
+
+
+    return redirect('selezione_racconti', page_number=page_number, categoriaeta=categoriaeta)
+
+
+# Vista per marcare un racconto come non letto
+@login_required
+def nonlettura_racconto(request, pk_racconto, page_number, categoriaeta):
+    # Vedo se il racconto è stato marcato come letto dal valutatore loggato
+    idEvent = id_active_event()
+    concorso = events.objects.all().get(pk=idEvent)
+    racconto = racconti.objects.all().get(pk=pk_racconto)
+
+    valutatore_concorso = valutatore.objects.all().filter(idEvent=concorso, idUser=request.user.email)[:1]
+
+    # Creo un record di lettura
+    raccontoletto = letturaracconto.objects.all().filter(idRacconto=racconto, idValutatore=valutatore_concorso[0])[:1]
+
+    # Il racconto non è stato letto da questo valutatore
+    # Controllo di sicurezza per stabilire
+    # che il valutatore non abbia effettivamente letto il racconto
+    if raccontoletto.count() >= 1:
+        print("Cancellazione")
+        l = letturaracconto.objects.all().filter(idRacconto=racconto, idValutatore=valutatore_concorso[0])
+        l.delete()
+
+    return redirect('selezione_racconti', page_number=page_number, categoriaeta=categoriaeta)
 
 
 # Genera la vista per la votazione dei racconti
@@ -395,7 +471,7 @@ def votazione_racconti(request, categoriaeta):
     concorso = events.objects.all().get(pk=idEvent)
 
     if categoriaeta == CATEGORIE_ETA[0]:
-        # racconti categoria junior scelti dai valutatori del concorso
+        # racconti categoria senior scelti dai valutatori del concorso
         racconti_evento = racconti.objects.all().filter(  # raccontovalutazione__idValutatore=valutatore_concorso[0],
             raccontovalutazione__selected=True,
             authorBirthDate__gte=concorso.birthDateLimit,

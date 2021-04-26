@@ -15,34 +15,34 @@
 
 
     <hr>
-{#    <div class="container">#}
-{#  <div class="row">#}
-{#    <div class="col-sm">#}
-{#      <a href="{% url 'list_racconti_segreteria' pk_event %}" class="btn btn-primary btn-sm disabled">CONSEGNE</a>#}
-{#            <br><br>#}
-{#            <a href="{% url 'list_selezioni_segreteria' pk_event %}" class="btn btn-primary btn-sm">SELEZIONI</a>#}
-{#            &nbsp;&nbsp;&nbsp;#}
-{#    </div>#}
-{#    <div class="col-sm">#}
-{#       <a href="{% url 'list_racconti_junior' pk_event %}" class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.0 | upper }}</a>#}
-{#            <br><br>#}
-{#            <a href="{% url 'list_racconti_senior' pk_event %}" class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.1 | upper }}</a>#}
-{#            <br><br>#}
-{#            <a href="{% url 'list_racconti_junior_senior' pk_event %}"#}
-{#               class="btn btn-primary btn-sm">CLASSIFICAZIONI TOTALE</a>#}
-{#    </div>#}
-{#    <div class="col-sm">#}
-{#       <a href="{% url 'list_valutatori_selezioni' pk_event %}"#}
-{#               class="btn btn-primary btn-sm">STATO SELEZIONI</a>#}
-{#            <br><br>#}
-{#            <a href="{% url 'list_valutatori_classificazioni' pk_event %}"#}
-{#               class="btn btn-primary btn-sm">STATO CLASSIFICAZIONI</a>#}
-{#            <br><br>#}
-{#            <a href="{% url 'send_email' pk_event %}"#}
-{#               class="btn btn-primary btn-sm">COMUNICAZIONI</a>#}
-{#    </div>#}
-{#  </div>#}
-{#</div>#}
+    {#    <div class="container">#}
+    {#  <div class="row">#}
+    {#    <div class="col-sm">#}
+    {#      <a href="{% url 'list_racconti_segreteria' pk_event %}" class="btn btn-primary btn-sm disabled">CONSEGNE</a>#}
+    {#            <br><br>#}
+    {#            <a href="{% url 'list_selezioni_segreteria' pk_event %}" class="btn btn-primary btn-sm">SELEZIONI</a>#}
+    {#            &nbsp;&nbsp;&nbsp;#}
+    {#    </div>#}
+    {#    <div class="col-sm">#}
+    {#       <a href="{% url 'list_racconti_junior' pk_event %}" class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.0 | upper }}</a>#}
+    {#            <br><br>#}
+    {#            <a href="{% url 'list_racconti_senior' pk_event %}" class="btn btn-primary btn-sm">CLASSIFICAZIONI {{ categorieeta.1 | upper }}</a>#}
+    {#            <br><br>#}
+    {#            <a href="{% url 'list_racconti_junior_senior' pk_event %}"#}
+    {#               class="btn btn-primary btn-sm">CLASSIFICAZIONI TOTALE</a>#}
+    {#    </div>#}
+    {#    <div class="col-sm">#}
+    {#       <a href="{% url 'list_valutatori_selezioni' pk_event %}"#}
+    {#               class="btn btn-primary btn-sm">STATO SELEZIONI</a>#}
+    {#            <br><br>#}
+    {#            <a href="{% url 'list_valutatori_classificazioni' pk_event %}"#}
+    {#               class="btn btn-primary btn-sm">STATO CLASSIFICAZIONI</a>#}
+    {#            <br><br>#}
+    {#            <a href="{% url 'send_email' pk_event %}"#}
+    {#               class="btn btn-primary btn-sm">COMUNICAZIONI</a>#}
+    {#    </div>#}
+    {#  </div>#}
+    {#</div>#}
 
 
     <nav class="navbar navbar-expand-md">
@@ -71,11 +71,11 @@
         </div>
     </nav>
     <hr>
-    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica_Solo_Pubblicabili' 6 pk_event%}" download>
+    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica_Solo_Pubblicabili' 6 pk_event %}" download>
         Download pdf di tutti i racconti consegnati pubblicabili.
     </a>
     <br><br>
-    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica' 1 pk_event%}" download>
+    <a href="{% url 'GeneratePDFMULTIPLO_Con_Anagrafica' 1 pk_event %}" download>
         Download pdf di tutti i racconti consegnati.
     </a>
     <br><br>
@@ -83,6 +83,18 @@
         Download XLSX racconti consegnati.
     </a>
     <br>
+    <br>
+
+    <div class="alert alert-danger" role="alert">
+            <span>
+                <strong>ATTENZIONE: </strong>
+                l'eliminazione di un racconto comporterà anche l'eliminazione di tutte le selezioni e valutazioni, a questo collegate,
+                effettuate dai membri della commissione.
+                <br>
+                L'operazione è irreversibile ed i dati cancellati non potranno essere recuperati.
+        </span>
+        </div>
+
     <br>
 
     <table class="table table-hover table-responsive" style="overflow-y: hidden;">
@@ -94,6 +106,7 @@
             <col span="1" style="width: 20%">
             <col span="1" style="width: 20%">
             <col span="1" style="width: 20%">
+            <col span="1" style="width: 19%; background-color: white; text-align: center;">
             <col span="1" style="width: 19%; background-color: white; text-align: center;">
         </colgroup>
         <thead>
@@ -138,6 +151,10 @@
 
             <th style="font-size: 14px; vertical-align: middle">
                 Link al documento
+            </th>
+
+            <th style="font-size: 14px; vertical-align: middle">
+                Elimina
             </th>
         </tr>
         </thead>
@@ -194,7 +211,15 @@
                     {{ racconto.authorDetail }}
                 </td>
                 <td style="font-size: 14px;">
-                    <a aria-label="Link a documento  {{ racconto.counter }}" href="{% url 'GeneraPDF_SINGOLO_Con_Anagrafica' racconto.pk  pk_event%}" target="_blank" download>LINK</a>
+                    <a aria-label="Link a documento  {{ racconto.counter }}"
+                       href="{% url 'GeneraPDF_SINGOLO_Con_Anagrafica' racconto.pk  pk_event %}" target="_blank"
+                       download>LINK</a>
+                </td>
+
+                <td style="font-size: 14px;">
+                    <a aria-label="Elimina racconto {{ racconto.counter }}"
+                       class="btn btn-danger btn-sm btn-block"
+                       href="{% url 'delete_racconto' racconto.pk %}">Elimina</a>
                 </td>
             </tr>
 

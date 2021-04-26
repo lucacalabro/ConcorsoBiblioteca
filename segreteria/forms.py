@@ -36,9 +36,9 @@ class MailForm(forms.Form):
                                                        initial=False,
                                                        choices=[("Tutti", 'Tutti i membri della commissione'), (
                                                            "Selezioni",
-                                                           'Solo i membri della commissione che non hanno selezionato il numero massimo di racconti.'),
+                                                           'Solo i membri della commissione che non hanno selezionato il numero previsto di racconti.'),
                                                                 ("Valutazioni",
-                                                                 'Solo i membri della commissione che non hanno effettuato tutte le valutazioni per i racconti della categoria {J} e/o {S}'.format(
+                                                                 'Solo i membri della commissione che non hanno classificato i racconti della categoria {J} e/o {S}'.format(
                                                                      J=CATEGORIE_ETA[0], S=CATEGORIE_ETA[1]))],
                                                        label='Destinatari',
                                                        required=True)

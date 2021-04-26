@@ -174,6 +174,38 @@ def list_racconti_segreteria(request, pk_event):
     return render(request, 'list_consegne_racconti_concorso.html', context)
 
 
+# Cancella Un racconto e tutte le valutazioni e selezioni ad esso associate
+# Permesso solo per il ruolo Segretario
+@login_required
+def delete_racconto(request, pk_racconto):
+    # Controllo che l'utente sia un gestore
+    permissions = get_permission(request.user.email)
+
+    if not permissions["is_segretario"]:  # Non è un segretario
+        return redirect('home')
+
+    # Cancellazione racconto
+    _racconto = get_object_or_404(racconti, pk=pk_racconto)
+    racconto_id = _racconto.pk
+    racconto_event = _racconto.idEvent.eventName
+
+    pk_event = _racconto.idEvent.pk
+
+    racconto_title = _racconto.title
+    _racconto.delete()
+
+    # LOG operazione
+    insert_log(username=request.user.email,
+               operationDate=datetime.now(),
+               roleUser="Segretario",
+               type="Eliminazione racconto",
+    description = "Eliminazione racconto {racconto_title} id=[{racconto_id}] per l'evento {racconto_event}".format(
+        racconto_title=racconto_title, racconto_event=racconto_event, racconto_id=racconto_id)
+    )
+
+    return redirect('list_racconti_segreteria', pk_event)
+
+
 # Restituisce il Queryset dei racconti consegnati per un dato concorso
 def get_racconti_consegnati_concorso(concorso):
     # Controllo che il pk_event corrisponda all'id di un evento esistente
@@ -182,16 +214,12 @@ def get_racconti_consegnati_concorso(concorso):
     return racconti_consegnati
 
 
-
 # Restituisce il Queryset dei racconti consegnati per un dato concorso
 def get_racconti_consegnati_concorso_pubblicabili(concorso):
     # Controllo che il pk_event corrisponda all'id di un evento esistente
     racconti_consegnati = racconti.objects.filter(idEvent=concorso, publishingPermission=True).order_by("counter")
 
     return racconti_consegnati
-
-
-
 
 
 # Lista Racconti selezionati per un dato concorso
@@ -370,13 +398,12 @@ def list_valutatori_selezioni(request, pk_event):
     valutatori_concorso = concorso.valutatoriconcorso.all()
 
     for valutatore in valutatori_concorso:
-        #Numero totale di racconti selezionati
+        # Numero totale di racconti selezionati
         valutatore.numero_racconti_selezionati = get_numero_racconti_selezionati(valutatore)
         # Numero totale di racconti selezionati Junior
         valutatore.numero_racconti_selezionati_junior = get_numero_racconti_selezionati_junior(valutatore)
         # Numero totale di racconti selezionati Senior
         valutatore.numero_racconti_selezionati_senior = get_numero_racconti_selezionati_senior(valutatore)
-
 
     valutatori_concorso = sorted(valutatori_concorso, key=operator.attrgetter('idUser'), reverse=False)
 
@@ -406,6 +433,7 @@ def get_numero_racconti_selezionati_junior(valutatore):
             count += 1
     return count
 
+
 # Restituisce il numero di racconti Senior selezionati da un valutatore
 def get_numero_racconti_selezionati_senior(valutatore):
     count = 0
@@ -413,6 +441,7 @@ def get_numero_racconti_selezionati_senior(valutatore):
         if valutazione.selected and valutazione.idRacconto.authorBirthDate < valutatore.idEvent.birthDateLimit:
             count += 1
     return count
+
 
 # Lista dei valutatori di un concorso con relative classificazioni
 # Permesso solo per il ruolo Segretario
@@ -433,7 +462,7 @@ def list_valutatori_classificazioni(request, pk_event):
 
     valutatori_concorso = sorted(valutatori_concorso, key=operator.attrgetter('idUser'), reverse=False)
 
-    #print(type(valutatori_concorso))
+    # print(type(valutatori_concorso))
 
     # print(valutatori_concorso)
     context = {'valutatori_concorso': valutatori_concorso, 'titolo_concorso': concorso.eventName,
@@ -455,7 +484,7 @@ def get_ranking_racconto(racconto):
     return ranking
 
 
-# Invio messaggie email
+# Invio messaggi email
 def send_email(request, pk_event):
     # Controllo che l'utente sia un segretario
     permissions = get_permission(request.user.email)

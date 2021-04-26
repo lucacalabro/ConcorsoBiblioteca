@@ -18,8 +18,7 @@ class raccontiModelForm(forms.ModelForm):
                                                    required=False)
         self.fields['publishingPermission'] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                                 initial=False, choices=[(True, 'Si'), (False, 'No')],
-                                                                label='Autorizzo la pubblicazione dei racconti '
-                                                                      'sul sito della Biblioteca di Ateneo',
+                                                                label='Autorizzo la Biblioteca di Ateneo alla pubblicazione del mio racconto',
                                                                 required=False)
 
         # Campi aggiunti non appartenenti al model

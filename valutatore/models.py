@@ -20,6 +20,11 @@ class valutatore(models.Model):
     # def get_absolute_url(self):
     #     return reverse('update_event', kwargs={'pk': self.pk})
 
+class letturaracconto(models.Model):
+    idRacconto = models.ForeignKey(racconti, related_name='raccontoletto', on_delete=models.CASCADE)
+    idValutatore = models.ForeignKey(valutatore, related_name='valutatorelettura', on_delete=models.CASCADE)
+
+
 
 class valutazione(models.Model):
     idRacconto = models.ForeignKey(racconti, related_name='raccontovalutazione', on_delete=models.CASCADE)

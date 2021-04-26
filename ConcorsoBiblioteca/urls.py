@@ -18,7 +18,7 @@ from django.urls import path, include, re_path
 from home.views import homepage, login
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
     path('', login, name="login"),
 
     #Schermata di login per le pagine autenticate

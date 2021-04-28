@@ -85,6 +85,7 @@
     <br>
     <br>
 
+    {% if is_active %}
     <div class="alert alert-danger" role="alert">
             <span>
                 <strong>ATTENZIONE: </strong>
@@ -93,7 +94,14 @@
                 <br>
                 L'operazione è irreversibile ed i dati cancellati non potranno essere recuperati.
         </span>
-        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+            <span>
+                Concorso non attivo, non è possibile eliminare racconti
+        </span>
+    </div>
+    {% endif %}
 
     <br>
 
@@ -216,11 +224,19 @@
                        download>LINK</a>
                 </td>
 
-                <td style="font-size: 14px;">
-                    <a aria-label="Elimina racconto {{ racconto.counter }}"
-                       class="btn btn-danger btn-sm btn-block"
-                       href="{% url 'delete_racconto' racconto.pk %}">Elimina</a>
-                </td>
+
+
+                {% if is_active %}
+                    <td style="font-size: 14px;">
+                        <a aria-label="Elimina racconto {{ racconto.counter }}"
+                           class="btn btn-danger btn-sm btn-block"
+                           href="{% url 'delete_racconto' racconto.pk %}">Elimina</a>
+                    </td>
+                {% else %}
+                    <td style="font-size: 14px;">
+                        #
+                    </td>
+                {% endif %}
             </tr>
 
         {% endfor %}

@@ -164,10 +164,20 @@ def list_racconti_segreteria(request, pk_event):
     # Controllo che il pk_event corrisponda all'id di un evento esistente
     concorso = get_object_or_404(events, pk=pk_event)
 
+    #controllo se il concorso sia quello attivo
+    #non si possonon cancellare racconti per concorsi non attivi
+    if id_active_event() is not None and concorso.pk == id_active_event():
+        is_active = True
+    else:
+        is_active = False
+
+
+
     racconti_consegnati = get_racconti_consegnati_concorso(concorso)
 
     context = {'racconti_consegnati': racconti_consegnati, 'titolo_concorso': concorso.eventName,
-               'categorieeta': CATEGORIE_ETA, 'limite_data': concorso.birthDateLimit, 'pk_event': pk_event}
+               'categorieeta': CATEGORIE_ETA, 'limite_data': concorso.birthDateLimit, 'pk_event': pk_event,
+               'is_active' : is_active}
 
     context.update(permissions)
 

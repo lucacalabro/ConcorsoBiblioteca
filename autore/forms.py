@@ -28,7 +28,7 @@ class raccontiModelForm(forms.ModelForm):
                                                               required=True)
         self.fields['visioneinformativa'] = forms.ChoiceField(widget=forms.CheckboxInput(),  # .RadioSelect(),
                                                               initial=False, choices=[(True, 'Si'), (False, 'No')],
-                                                              label="Dichiaro di aver preso visione dell'informativa privacy all'indirizzo <a aria-labelledby='Sito web esterno - informativa privacy' href = 'https://www.unimib.it/sites/default/files/allegati/informativa_eventi_e_iniziative.pdf' target = '_blank' >LINK</a>",
+                                                              label="Dichiaro di aver preso visione dell'informativa privacy all'indirizzo <a aria-labelledby='Sito web esterno - informativa privacy' href = 'https://www.unimib.it/sites/default/files/Informativa_servizi_bibliotecari.pdf' target = '_blank' >LINK</a>",
                                                               required=True)
 
     # title = forms.CharField(label="Titolo del racconto", max_length=128)

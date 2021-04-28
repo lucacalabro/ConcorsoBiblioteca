@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from allauth.account.decorators import login_required
 from ConcorsoBiblioteca.utils import id_active_event, is_active_event_submittible, is_submitted_in_active_event, \
@@ -5,6 +6,9 @@ from ConcorsoBiblioteca.utils import id_active_event, is_active_event_submittibl
 from autore.models import racconti
 from gestore.models import events
 from django.utils import timezone
+
+
+
 
 
 
